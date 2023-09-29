@@ -76,7 +76,16 @@
 
 @section('css')
     <style>
-
+        @media (max-width: 767px) {
+            .table-responsive .dropdown-menu {
+                position: static !important;
+            }
+        }
+        @media (min-width: 768px) {
+            .table-responsive {
+                overflow: visible;
+            }
+        }
     </style>
 @stop
 

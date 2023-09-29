@@ -36,7 +36,7 @@
                                             $features_list .= '<span><b>'.$feature->feature->name.'</b>: '.$feature->value.'</span><br>';
                                         }
                                     @endphp
-                                    <li @if($detail->features_list->count() || $detail->observations) data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true"  data-content="<div>{!! $features_list ? $features_list : '' !!}{!! $detail->observations && $detail->features_list->count() ? '<hr>' : '' !!} {{ $detail->observations }}</div>" style="cursor: pointer" @endif>{{ floatval($detail->quantity) ? intval($detail->quantity) : $detail->quantity }} {{ $detail->type->unit }} {{ $detail->type->name }} a {{ $detail->price }} Bs.</li>
+                                    <li @if($detail->features_list->count() || $detail->observations) data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true"  data-content="<div>{!! $features_list ? $features_list : '' !!}{!! $detail->observations && $detail->features_list->count() ? '<hr>' : '' !!} {{ $detail->observations }}</div>" style="cursor: pointer" @endif>{{ floatval($detail->quantity) ? intval($detail->quantity) : $detail->quantity }}{{ $detail->type->unit ? $detail->type->unit.' de ' : '' }} {{ $detail->type->name }} a {{ $detail->price }} Bs.</li>
                                     @php
                                         $subtotal += $detail->quantity * $detail->price;
                                     @endphp
@@ -44,19 +44,19 @@
                             </ul>
                         </td>
                         <td>{{ $subtotal }}</td>
-                        <td></td>
+                        <td>{{ $subtotal }}</td>
                         <td>
                             @php
                                 switch ($item->status) {
                                     case 'pendiente':
-                                        # code...
+                                        $label = 'warning';
                                         break;
-                                    
                                     default:
-                                        # code...
+                                        $label = 'default';
                                         break;
                                 }
                             @endphp
+                            <label class="label label-{{ $label }}">{{ $item->status }}</label>
                         </td>
                         <td>
                             {{ $item->user ? $item->user->name : '' }} <br>
@@ -69,6 +69,8 @@
                                     Más <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                    <li><a href="#" title="Pagar">Pagar</a></li>
+                                    <li class="divider" style="margin: 5px 0px"></li>
                                     <li><a href="{{ route('pawn.print', $item->id) }}" title="Imprimir" target="_blank">Imprimir</a></li>
                                 </ul>
                             </div>

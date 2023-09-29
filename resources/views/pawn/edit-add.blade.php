@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <small for="date_limit">Fecha del límite de devolución</small>
-                                    <input type="date" name="date_limit" class="form-control" value="{{ date('Y-m-d') }}" required>
+                                    <input type="date" name="date_limit" class="form-control" value="{{ date('Y-m-d', strtotime(date('Y-m-d').' +1 months')) }}" required>
                                 </div>
                             </div>
                             <hr>
