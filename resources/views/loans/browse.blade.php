@@ -472,15 +472,8 @@
         });
 
         function list(page = 1){
-            // $('#div-results').loading({message: 'Cargando...'});
-
-            // $("#div-results").LoadingOverlay("show");
+            $('#div-results').loading({message: 'Cargando...'});
             let type = $(".radio-type:checked").val();
-            // alert(type)
-
-            var loader = '<div class="col-md-12 bg"><div class="loader" id="loader-3"></div></div>'
-            $('#div-results').html(loader);
-
             let url = "{{ url('admin/loans/ajax/list')}}/"+cashier_id;
             let search = $('#input-search').val() ? $('#input-search').val() : '';
 
@@ -489,8 +482,10 @@
                 type: 'get',
                 
                 success: function(result){
-                $("#div-results").html(result);
-            }});
+                    $("#div-results").html(result);
+                    $('#div-results').loading('toggle');
+                }
+            });
 
         }
 

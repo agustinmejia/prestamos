@@ -13,8 +13,6 @@
 
     <link rel="stylesheet" href="{{ asset('css/style/dataTable.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style/h.css') }}">
-    
-    <link rel="stylesheet" href="{{ asset('css/style/loading.css') }}">
 
     {{-- show swetalert message --}}
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -127,10 +125,7 @@
         @include('voyager::partials.app-footer')
 
         <!-- Javascript Libs -->
-
-
         <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
-
 
         <script>
             //para que cada ves que cambie de pagina verfifique si hay prestamos con dias atrazados
@@ -151,19 +146,8 @@
                 //         "href" : "admins"
                 //     }
                 // );
-
-            
             });
-
-
-
-
-            
-
         </script>
-
-
-
 
         <script>
             @if(Session::has('alerts'))
@@ -190,9 +174,6 @@
         <script src="{{ asset('vendor/momentjs/moment-with-locales.min.js') }}"></script>
 
         {{-- <script src="{{ asset('js/timbre.js') }}"></script> --}}
-
-
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js"></script>
             <script>       
                 $(function() {

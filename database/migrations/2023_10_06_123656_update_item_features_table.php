@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemFeaturesTable extends Migration
+class UpdateItemFeaturesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,8 @@ class CreateItemFeaturesTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_features', function (Blueprint $table) {
-            $table->id();
+        Schema::table('item_features', function (Blueprint $table) {
             $table->foreignId('item_category_id')->nullable()->constrained('item_categories');
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -30,6 +25,6 @@ class CreateItemFeaturesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('item_features');
+        //
     }
 }

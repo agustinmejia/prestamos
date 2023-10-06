@@ -430,14 +430,8 @@
         });
 
         function list(page = 1){
-            // let type = $(".radio-type:checked").val();
-            // let type =$("#select-status option:selected").text();
+            $('#div-results').loading({message: 'Cargando...'});
             let type =$("#select-status").val();
-            // alert(type)
-
-            var loader = '<div class="col-md-12 bg"><div class="loader" id="loader-3"></div></div>'
-            $('#div-results').html(loader);
-
             let url = "{{ url('admin/garments/ajax/list')}}/"+cashier_id;
             let search = $('#input-search').val() ? $('#input-search').val() : '';
 
@@ -446,8 +440,10 @@
                 type: 'get',
                 
                 success: function(result){
-                $("#div-results").html(result);
-            }});
+                    $("#div-results").html(result);
+                    $('#div-results').loading('toggle');
+                }
+            });
 
         }
 

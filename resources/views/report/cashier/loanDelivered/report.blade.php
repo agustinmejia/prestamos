@@ -172,12 +172,7 @@
 
             $('#form-search').on('submit', function(e){
                 e.preventDefault();
-                $('#div-results').empty();
-                // $('#div-results').loading({message: 'Cargando...'});
-                // alert(1)
-                var loader = '<div class="col-md-12 bg"><div class="loader" id="loader-3"></div></div>'
-                $('#div-results').html(loader);
-
+                $('#div-results').loading({message: 'Cargando...'});
                 $.post($('#form-search').attr('action'), $('#form-search').serialize(), function(res){
 
                     $('#div-results').html(res);
@@ -186,7 +181,7 @@
                     toastr.error('Ocurrió un error!', 'Oops!');
                 })
                 .always(function() {
-                    // $('#div-results').loading('toggle');
+                    $('#div-results').loading('toggle');
                     // $('html, body').animate({
                     //     scrollTop: $("#div-results").offset().top - 70
                     // }, 500);

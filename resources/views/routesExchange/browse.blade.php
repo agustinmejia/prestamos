@@ -114,12 +114,8 @@
         $(document).ready(function() {
 
             $('#form-search').on('submit', function(e){
-                
                 e.preventDefault();
-                $('#div-results').empty();
-                var loader = '<div class="col-md-12 bg"><div class="loader" id="loader-3"></div></div>'
-                $('#div-results').html(loader);
-                // $('#div-results').loading({message: 'Cargando...'});
+                $('#div-results').loading({message: 'Cargando...'});
                 $.post($('#form-search').attr('action'), $('#form-search').serialize(), function(res){
                     $('#div-results').html(res);
                 })

@@ -137,8 +137,8 @@ class AjaxController extends Controller
                 $amountDebt+=($iten->amount-$iten->debt);
             }
             // 
-            Http::get('https://api.whatsapp.capresi.net/?number=591'.$item->cell_phone.'&message=
-*COMPROBANTE DE DEUDA PENDIENTE*
+            try {
+$message = '*COMPROBANTE DE DEUDA PENDIENTE*
 
 CODIGO: '.$item->code.'                      
 FECHA: '.Carbon::parse($item->dateDelivered)->format('d/m/Y').'
@@ -153,7 +153,19 @@ ___________________________________
 TOTAL (BS)                  '.number_format($amountDebt,2).'         '.number_format($amountTotal,2).'
     
     
-Gracias🤝😊');
+Gracias🤝😊';
+
+                if (setting('servidores.whatsapp')) {
+                    Http::post(setting('servidores.whatsapp'), [
+                        'phone' => '591'.$item->cell_phone,
+                        'text' => $message,
+                        'image_url' => '',
+                    ]);
+                }
+
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
             $aux = Loan::where('id', $item->loan)->first();
             $aux->update(['notificationDate'=>date('Y-m-d'), 'notificationQuantity'=>$aux->notificationQuantity+1]);
             sleep(60);
@@ -182,6 +194,4 @@ Gracias🤝😊');
         }
         return $balance;
     }
-
-  
 }

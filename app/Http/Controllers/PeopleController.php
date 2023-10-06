@@ -142,15 +142,14 @@ class PeopleController extends Controller
     public function verification(Request $request){
         DB::beginTransaction();
         try {
-            // for ($i=0; $i < 2; $i++) { 
-                Http::get('https://api.whatsapp.capresi.net/?number=591'.$request->phone.'&message=Hola *'.$request->name.'*.%0A%0A*CAPRESI* te da la Bienvenida%0A%0APara verificar tus datos personales has clic en el enlace de abajo.%0A👇👇%0Ahttps://capresi.net/message/'.$request->id.'/verification');
-            //     if($i < 2-1)
-            //     {
-            //         sleep(10);
-            //     }
-            // }
-            // Http::get('http://whatsapp.capresi.net/?number=59167285914&message=aaa');
-
+            
+            if (setting('servidores.whatsapp')) {
+                Http::post(setting('servidores.whatsapp'), [
+                    'phone' => '591'.$request->phonee,
+                    'text' => 'Hola *'.$request->name.'*.%0A%0A*CAPRESI* te da la Bienvenida%0A%0APara verificar tus datos personales has clic en el enlace de abajo.%0A👇👇%0Ahttps://capresi.net/message/'.$request->id.'/verification',
+                    'image_url' => '',
+                ]);
+            }
           
             DB::commit();
             return response()->json(['customer' => 1]);

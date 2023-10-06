@@ -315,11 +315,7 @@
         });
 
         function list(page = 1){
-            // $('#div-results').loading({message: 'Cargando...'});
-            var loader = '<div class="col-md-12 bg"><div class="loader" id="loader-3"></div></div>'
-            $('#div-results').html(loader);
-
-
+            $('#div-results').loading({message: 'Cargando...'});
             let url = '{{ url("admin/people/ajax/list") }}';
             let search = $('#input-search').val() ? $('#input-search').val() : '';
             $.ajax({
@@ -327,8 +323,7 @@
                 type: 'get',
                 success: function(response){
                     $('#div-results').html(response);
-                    // $('#div-results').loading('toggle');
-
+                    $('#div-results').loading('toggle');
                 }
             });
         }

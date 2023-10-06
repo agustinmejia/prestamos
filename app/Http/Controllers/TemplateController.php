@@ -37,7 +37,18 @@ class TemplateController extends Controller
         $aux = rand(10,99).''.rand(1,9).''.rand(100,999);
         codeVerification::where('loan_id', $request->loan_id)->where('type','solicitudCliente')->where('status',1)->update(['status'=>0]);
         CodeVerification::create(['type'=>'solicitudCliente', 'loan_id'=>$request->loan_id, 'cell_phone'=>$request->cell_phone, 'code'=>$aux]);
-        Http::get('https://api.whatsapp.capresi.net/?number=591'.$request->cell_phone.'&message=CAPRESI%0A%0A*'.$aux.'* es tu codigo de verificación.%0A%0ANo lo compartas con nadie mas');
+        
+        try {
+            if (setting('servidores.whatsapp')) {
+                Http::post(setting('servidores.whatsapp'), [
+                    'phone' => '591'.$request->cell_phone,
+                    'text' => 'CAPRESI%0A%0A*'.$aux.'* es tu codigo de verificación.%0A%0ANo lo compartas con nadie mas',
+                    'image_url' => '',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
         return true;
     }
@@ -61,8 +72,10 @@ class TemplateController extends Controller
                 $cadena=$cadena.''.Carbon::parse($iten->date)->format('d/m/Y').'                  '.$iten->amount.'                '.str_pad(($iten->amount-$iten->debt), 2, "0", STR_PAD_LEFT).($i!=$cant?'%0A':'');
                 
             }
-            Http::get('https://api.whatsapp.capresi.net/?number=591'.$phone.'&message=
-  *COMPROBANTE DE DEUDA PENDIENTE*
+            
+            try {
+$message =
+'  *COMPROBANTE DE DEUDA PENDIENTE*
 
     
                 *DETALLE DEL PRESTAMO*
@@ -70,7 +83,19 @@ class TemplateController extends Controller
 __________________________________________%0A'.
                     $cadena.'
 _________________________________________
-    Gracias🤝😊');
+    Gracias🤝😊';
+
+                if (setting('servidores.whatsapp')) {
+                    Http::post(setting('servidores.whatsapp'), [
+                        'phone' => '591'.$phone,
+                        'text' => $message,
+                        'image_url' => '',
+                    ]);
+                }
+
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
         
             return 1;
         }
