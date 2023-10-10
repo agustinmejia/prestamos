@@ -18,6 +18,7 @@ class CreateItemFeaturesTable extends Migration
             $table->foreignId('item_category_id')->nullable()->constrained('item_categories');
             $table->string('name')->nullable();
             $table->text('description')->nullable();
+            $table->smallInteger('required')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

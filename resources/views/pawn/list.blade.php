@@ -37,7 +37,9 @@
                                     @php
                                         $features_list = '';
                                         foreach ($detail->features_list as $feature) {
-                                            $features_list .= '<span><b>'.$feature->feature->name.'</b>: '.$feature->value.'</span><br>';
+                                            if ($feature->value) {
+                                                $features_list .= '<span><b>'.$feature->feature->name.'</b>: '.$feature->value.'</span><br>';
+                                            }
                                         }
                                     @endphp
                                     <li @if($detail->features_list->count() || $detail->observations) data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" title="" data-content="<div>{!! $features_list ? $features_list : '' !!}{!! $detail->observations && $detail->features_list->count() ? '<hr>' : '' !!} {{ $detail->observations }}</div>" style="cursor: pointer" @endif style="font-size: 12px">{{ floatval($detail->quantity) ? intval($detail->quantity) : $detail->quantity }}{{ $detail->type->unit }} {{ $detail->type->name }} a {{ floatval($detail->price) ? intval($detail->price) : $detail->price }}<span style="font-size: 10px">Bs.</span></li>

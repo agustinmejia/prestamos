@@ -66,7 +66,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('people', [PeopleController::class, 'index'])->name('voyager.people.index');
     Route::get('people/ajax/list/{search?}', [PeopleController::class, 'list']);
     Route::get('people/search/ajax', [PeopleController::class, 'ajaxPeople']);
-    Route::post('people/store', [PeopleController::class, 'store']);
+    Route::post('people/store', [PeopleController::class, 'store'])->name('people.store');
     Route::get('people/{id?}/sponsor', [PeopleController::class, 'indexSponsor'])->name('people-sponsor.index');
     Route::post('people/{id?}/sponsor/store', [PeopleController::class, 'storeSponsor'])->name('people-sponsor.store');
     Route::delete('people/{people?}/sponsor/{sponsor?}/delete', [PeopleController::class, 'destroySponsor'])->name('people-sponsor.delete');

@@ -171,17 +171,16 @@ class PeopleController extends Controller
         DB::beginTransaction();
         try {
             $ok = People::where('ci', $request->ci)->where('deleted_at', null)->first();
-            if($ok)
-            {
-                return response()->json(['error' => 'Ya existe una persona registrada con el mismo numero de CI'], 500);
+            if($ok){
+                return response()->json(['error' => 'Ya existe una persona registrada con el mismo numero de CI']);
             }
             $request->merge(['register_userId'=>Auth::user()->id]);
             $people = People::create($request->all());
             DB::commit();
-            return response()->json(['people' => $people]);
+            return response()->json(['success' => 1, 'people' => $people]);
         } catch (\Throwable $th) {
             DB::rollback();
-            return response()->json(['error' => $th->getMessage()], 500);
+            return response()->json(['error' => $th->getMessage()]);
         }
     }
 

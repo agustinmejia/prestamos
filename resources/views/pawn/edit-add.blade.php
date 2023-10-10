@@ -10,7 +10,7 @@
 
 @section('content')
     <div class="page-content edit-add container-fluid">    
-        <form id="form-submit" action="{{ route('pawn.store') }}" method="POST" enctype="multipart/form-data">
+        <form class="form-submit" action="{{ route('pawn.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="cashier_id" value="">
             <div class="row">
@@ -61,7 +61,7 @@
                                     <small for="item_id">Tipo de artículo</small>
                                     <select name="item_id" class="form-control" id="select-item_id">
                                         <option value="" selected disabled>Seleccione tipo de artículo</option>
-                                        @foreach (App\Models\ItemType::with(['category'])->where('status', 1)->get() as $item)
+                                        @foreach (App\Models\ItemType::with(['category.features'])->where('status', 1)->get() as $item)
                                             <option value="{{ $item->id }}" data-item='@json($item)'>{{ $item->name }}</option>
                                         @endforeach
                                     </select>
@@ -156,7 +156,56 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" class="btn btn-dark btn-submit" value="Aceptar">
+                        <button type="submit" class="btn btn-dark btn-submit">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Create type items modal --}}
+    <form action="{{ route('people.store') }}" id="form-person" class="form-submit" method="POST">
+        @csrf
+        <div class="modal modal-primary fade" tabindex="-1" id="person-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="voyager-tag"></i> Registrar beneficiario</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="first_name">Nombre(s)</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name1">Apellido paterno</label>
+                            <input type="text" name="last_name1" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name2">Apellido materno</label>
+                            <input type="text" name="last_name2" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ci">CI</label>
+                            <input type="text" name="ci" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cell_phone">N&deg; de celular</label>
+                            <input type="text" name="cell_phone" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="birth_date">Fecha de nac.</label>
+                            <input type="date" name="birth_date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="street">Dirección</label>
+                            <textarea name="street" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-dark btn-submit">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -169,6 +218,13 @@
         .select2{
             width: 100% !important;
         }
+        .input-feature{
+            width: 120px;
+            border: 0px !important
+        }
+        .select2-container--open{
+            z-index: 100
+        }
     </style>
 @stop
 
@@ -176,19 +232,19 @@
     <script src="{{ asset('js/main.js') }}"></script>
     <script>
         var index = 0;
-        var features = @json($features);
         var number_features = 0;
         $(document).ready(function(){
             
-            customSelect('#select-people_id', '{{ url("admin/people/search/ajax") }}', formatResultPeople, data => data.first_name+' '+data.last_name1+' '+data.last_name2, null);
+            customSelect('#select-people_id', '{{ url("admin/people/search/ajax") }}', formatResultPeople, data => data.first_name+' '+data.last_name1+' '+data.last_name2, null, 'createPerson()');
+            
             $('#select-item_category_id').select2({
                 tags: true,
                 dropdownParent: '#type-items-modal',
                 createTag: function (params) {
                     return {
-                    id: params.term,
-                    text: params.term,
-                    newOption: true
+                        id: params.term,
+                        text: params.term,
+                        newOption: true
                     }
                 },
                 templateResult: function (data) {
@@ -202,45 +258,33 @@
             });
 
             $('#select-item_id').select2({
-                tags: true,
-                createTag: function (params) {
-                    return {
-                    id: params.term,
-                    text: params.term,
-                    newOption: true
-                    }
+                language: {
+                    noResults: function() {
+                        return `Resultados no encontrados <button class="btn btn-link" data-toggle="modal" data-target="#type-items-modal">Crear nuevo</a>`;
+                    },
                 },
-                templateResult: function (data) {
-                    var $result = $("<span></span>");
-                    $result.text(data.text);
-                    if (data.newOption) {
-                        $result.append(" <em>(ENTER o CLICK para agregar)</em> <button class='btn btn-default'>Agregar nuevo</button>");
-                    }
-                    return $result;
-                }
-            })
-            .change(function(){
-                let value = $('#select-item_id option:selected').val();
-                let newItem = $('#select-item_id option:selected').data('select2-tag');
-                if (newItem) {
-                    // Limpiar select
-                    $('#select-item_id').val('').trigger('change');
-
-                    // Agregar nombre de tipo de artículo al campo en el modal
-                    $('#type-items-modal').modal('show');
-                    $('#form-type-items input[name="name"]').val(value);
-                    
-                    // Quitar la opción creada en el select
-                    setTimeout(() => {
-                        $(`#select-item_id option[value='${value}']`).remove();
-                    }, 1000);
+                escapeMarkup: function(markup) {
+                    return markup;
                 }
             });
 
             $('#select-item_id').change(function(){
                 let type = $('#select-item_id option:selected').data('item');
                 if (type) {
+                    // Obetener la lista de características de cada tipo de item
+                    let features = '';
+                    type.category.features.map(item => {
+                        features += `
+                            <tr id="tr-features-${number_features}">
+                                <td style="width:120px !important"><input type="hidden" name="features_${index}[]" value="${item.id}" /><b>${item.name}</b>&nbsp;</td>
+                                <td><input type="text" name="features_value_${index}[]" ${item.required ? 'required' : ''} /></td>
+                                <td><button type="button" class="btn-danger" onclick="removeTrFeature(${number_features})">x</button></td>
+                            </tr>`;
+                            number_features++;
+                    });
+                    
                     $('.tr-empty').css('display', 'none');
+                    
                     $('#table-details').append(`
                         <tr id="tr-item-${index}">
                             <td class="td-number"></td>
@@ -261,9 +305,9 @@
                                     <span class="input-group-addon"><small>Bs.</small></span>
                                 </div>
                             </td>
-                            <td>
-                                <table id="table-features-${index}"></table>
-                                <a class="btn btn-link" onclick="addFeature(${index})"><i class="voyager-plus"></i> agregar</a>
+                            <td style="width: 300px" class="table-features">
+                                <table id="table-features-${index}">${features}</table>
+                                <a class="btn btn-link" onclick="addFeature(${index})" style="padding-left: 0px"><i class="voyager-plus"></i> agregar</a>
                             </td>
                             <td><textarea name="observation[]" class="form-control"></textarea></td>
                             <td id="td-subtotal-${index}" class="td-subtotal text-right">${type.price}</td>
@@ -277,6 +321,20 @@
                 }
             });
 
+            $('#form-person').submit(function(e){
+                e.preventDefault();
+                $.post($(this).attr('action'), $(this).serialize(), function(res){
+                    if(res.success){
+                        $('#person-modal').modal('hide');
+                        toastr.success('Beneficiario registrado correctamente', 'Bien hecho!');
+                        $('#form-person').trigger('submit');
+                    }else{
+                        toastr.error(res.error, 'Error');
+                    }
+                    $('.form-submit .btn-submit').prop('disabled', false);
+                });
+            });
+
             $('#form-type-items').submit(function(e){
                 e.preventDefault();
                 $.post($(this).attr('action'), $(this).serialize(), function(res){
@@ -285,7 +343,6 @@
                         $('#select-item_id').append(newOption).trigger('change');
                         $('#type-items-modal').modal('hide');
                         toastr.success('Tipo registrado correctamente', 'Bien hecho!');
-
                         setTimeout(() => {
                             $('#select-item_id').val(res.type.id).trigger('change');
                         }, 250);
@@ -297,21 +354,15 @@
             });
         });
 
+        function createPerson(){
+            $('#person-modal').modal('show');
+        }
+
         function addFeature(index){
-            let featuresList = '';
-            features.map((feature) => {
-                featuresList = featuresList+`<option value="${feature.id}">${feature.name}</option>`;
-            });
-
-            // Agregar option para crear atributo
-            featuresList = featuresList+`<option value="new">(<em>Nuevo</em>)</option>`
-
-            // Se va a nombrar los atributos de cada item concatenando el numero de item asignado
-            // para agruparlos al momento de recorerlos
             $(`#table-features-${index}`).append(`
                 <tr id="tr-features-${number_features}">
-                    <td id="td-name-features-${number_features}"><select name="features_${index}[]" id="select-features-${number_features}" style="height:24px !important; width: 120px" onchange="changeTypeInputFeature(${number_features}, ${index})">${featuresList}</select></td>
-                    <td><input name="features_value_${index}[]" required /></td>
+                    <td><input type="text" name="features_${index}[]" placeholder="Nuevo..." autofocus class="input-feature" required /></td>
+                    <td><input type="text" name="features_value_${index}[]" required /></td>
                     <td><button type="button" class="btn-danger" onclick="removeTrFeature(${number_features})">x</button></td>
                 </tr>
             `);
@@ -350,13 +401,6 @@
             // Si está vacío
             if(number == 1){
                 $('.tr-empty').css('display', 'block');
-            }
-        }
-
-        function changeTypeInputFeature(number_features, index){
-            let val = $(`#select-features-${number_features} option:selected`).val();
-            if(val == 'new'){
-                $(`#td-name-features-${number_features}`).html(`<input name="features_${index}[]" style="width: 120px" placeholder="Ingresar nuevo..." required />`);
             }
         }
 

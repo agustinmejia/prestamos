@@ -37,21 +37,23 @@ function customDataTable(url, columns = [], order = 0, orderBy = 'desc'){
     });
 }
 
-function customSelect(select, url, templateResult, templateSelection, dropdownParent){
+function customSelect(select, url, templateResult, templateSelection, dropdownParent, btnNoResults){
     $(select).select2({
         dropdownParent: dropdownParent ? dropdownParent : null,
+        language: {
+            noResults: function() {
+                return btnNoResults ? `Resultados no encontrados <button class="btn btn-link" onclick="${btnNoResults}">Crear nuevo</a>` : 'Resultados no encontrados';
+            },
+        },
+        escapeMarkup: function(markup) {
+            return markup;
+        },
         ajax: { 
             allowClear: true,
             url,
             type: "get",
             dataType: 'json',
             delay: 500,
-            // data:  (params) =>  {
-            //     var query = {
-            //         search: params.term
-            //     }
-            //     return query;
-            // },
             processResults: function (response) {
                 return {
                     results: response

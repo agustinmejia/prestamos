@@ -67,8 +67,6 @@
                             </div>
                             <hr style="margin:0;">
                         </div>
-                        
-                        
                     </div>
                 </div>
             </div>
@@ -92,6 +90,7 @@
                                     <tr>
                                         <th>N&deg;</th>
                                         <th>Tipo de artículo</th>
+                                        <th>Características</th>
                                         <th>Cantidad</th>
                                         <th>Precio</th>
                                         <th>Observaciones</th>
@@ -106,7 +105,21 @@
                                     @forelse ($pawn->details as $item)
                                         <tr>
                                             <td>{{ $cont }}</td>
-                                            <td>{{ $item->type->name }}</td>
+                                            <td>
+                                                {{ $item->type->name }} <br>
+                                                <small>{{ $item->type->category->name }}</small>
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $features_list = '';
+                                                    foreach ($item->features_list as $feature) {
+                                                        if ($feature->value) {
+                                                            $features_list .= '<span><b>'.$feature->feature->name.'</b>: '.$feature->value.'</span><br>';
+                                                        }
+                                                    }
+                                                @endphp
+                                                {!! $features_list !!}
+                                            </td>
                                             <td>{{ ($item->quantity - intval($item->quantity))*100 ? $item->quantity : intval($item->quantity) }}{{ $item->type->unit }}</td>
                                             <td>{{ $item->price }}</td>
                                             <td>{{ $item->observations }}</td>
@@ -120,13 +133,13 @@
                                         @endphp
                                     @empty
                                         <tr>
-                                            <td colspan="6">No hay datos disponible</td>
+                                            <td colspan="7">No hay datos disponible</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td class="text-right" colspan="5"><b>TOTAL</b></td>
+                                        <td class="text-right" colspan="6"><b>TOTAL</b></td>
                                         <td class="text-right"><b style="font-size: 15px">Bs. {{ number_format($total, 2, ',', '') }}</b></td>
                                     </tr>
                                 </tfoot>

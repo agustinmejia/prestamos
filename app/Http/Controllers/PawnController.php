@@ -13,6 +13,7 @@ use App\Models\PawnRegister;
 use App\Models\PawnRegisterDetail;
 use App\Models\PawnRegisterDetailFeature;
 use App\Models\PawnRegisterPayment;
+use App\Models\ItemType;
 
 class PawnController extends Controller
 {
@@ -69,8 +70,7 @@ class PawnController extends Controller
     public function create()
     {
         $this->custom_authorize('add_pawn');
-        $features = ItemFeature::all();
-        return view('pawn.edit-add', compact('features'));
+        return view('pawn.edit-add');
     }
 
     /**
@@ -104,12 +104,15 @@ class PawnController extends Controller
                     'observations' => $request->observation[$i]
                 ]);
 
+                // Obtener la categoría
+                $item_type = ItemType::find($request->item_type_id[$i]);
+
                 // Registrar características de cada item
                 if (isset($request->{'features_'.$i})) {
                     for ($j=0; $j < count($request->{'features_'.$i}); $j++) { 
                         PawnRegisterDetailFeature::create([
                             'pawn_register_detail_id' => $detail->id,
-                            'item_feature_id' => is_numeric($request->{'features_'.$i}[$j]) ? $request->{'features_'.$i}[$j] : ItemFeature::create(['name' => ucfirst($request->{'features_'.$i}[$j])])->id,
+                            'item_feature_id' => is_numeric($request->{'features_'.$i}[$j]) ? $request->{'features_'.$i}[$j] : ItemFeature::create(['item_category_id' => $item_type->item_category_id, 'name' => ucfirst($request->{'features_'.$i}[$j])])->id,
                             'value' => ucfirst($request->{'features_value_'.$i}[$j])
                         ]);
                     }

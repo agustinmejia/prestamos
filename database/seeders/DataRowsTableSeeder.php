@@ -2912,8 +2912,8 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"validation":{"rule":"required|max:191"}}',
-                'order' => 2,
+                'details' => '{"validation":{"rule":"required|max:191"},"display":{"width":6}}',
+                'order' => 4,
             ),
             181 => 
             array (
@@ -2929,7 +2929,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 1,
                 'delete' => 1,
                 'details' => '{}',
-                'order' => 3,
+                'order' => 6,
             ),
             182 => 
             array (
@@ -2945,7 +2945,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 4,
+                'order' => 7,
             ),
             183 => 
             array (
@@ -2961,7 +2961,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 5,
+                'order' => 8,
             ),
             184 => 
             array (
@@ -2977,7 +2977,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 6,
+                'order' => 9,
             ),
             185 => 
             array (
@@ -3186,6 +3186,54 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{"validation":{"rule":"max:191"},"display":{"width":6}}',
                 'order' => 7,
+            ),
+            198 => 
+            array (
+                'id' => 217,
+                'data_type_id' => 28,
+                'field' => 'item_feature_belongsto_item_category_relationship',
+                'type' => 'relationship',
+                'display_name' => 'Categoría',
+                'required' => 1,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"model":"App\\\\Models\\\\ItemCategory","table":"item_categories","type":"belongsTo","column":"item_category_id","key":"id","label":"name","pivot_table":"articles","pivot":"0","taggable":"0"}',
+                'order' => 2,
+            ),
+            199 => 
+            array (
+                'id' => 218,
+                'data_type_id' => 28,
+                'field' => 'item_category_id',
+                'type' => 'text',
+                'display_name' => 'Item Category Id',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{}',
+                'order' => 3,
+            ),
+            200 => 
+            array (
+                'id' => 219,
+                'data_type_id' => 28,
+                'field' => 'required',
+                'type' => 'checkbox',
+                'display_name' => 'Rquerido',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+                'details' => '{"on":"Si","off":"No","checked":true,"display":{"width":6}}',
+                'order' => 5,
             ),
         ));
         

@@ -16,4 +16,8 @@ class ItemCategory extends Model
         'description',
         'status',
     ];
+
+    public function features(){
+        return $this->hasMany(ItemFeature::class, 'item_category_id');
+    }
 }

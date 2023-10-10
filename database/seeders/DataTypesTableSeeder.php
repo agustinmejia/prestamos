@@ -359,7 +359,7 @@ class DataTypesTableSeeder extends Seeder
                 'server_side' => 0,
                 'details' => '{"order_column":null,"order_display_column":null,"order_direction":"asc","default_search_key":null,"scope":null}',
                 'created_at' => '2023-09-21 23:24:43',
-                'updated_at' => '2023-09-21 23:25:15',
+                'updated_at' => '2023-10-10 11:56:38',
             ),
             19 => 
             array (

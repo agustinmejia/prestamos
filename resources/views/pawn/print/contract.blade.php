@@ -30,10 +30,15 @@
                 @php
                     $features_list = '';
                     foreach ($detail->features_list as $feature) {
-                        $features_list .= '<span><b>'.$feature->feature->name.'</b>: '.$feature->value.'</span><br>';
+                        if ($feature->value) {
+                            $features_list .= '<span><b>'.$feature->feature->name.'</b>: '.$feature->value.'</span>&nbsp;&nbsp;&nbsp;';
+                        }
                     }
                 @endphp
-                <li>{{ floatval($detail->quantity) ? intval($detail->quantity) : $detail->quantity }}{{ $detail->type->unit }} {{ $detail->type->name }} con un precio de {{ $detail->price }} Bs.</li>
+                <li>
+                    {{ floatval($detail->quantity) ? intval($detail->quantity) : $detail->quantity }}{{ $detail->type->unit }} {{ $detail->type->name }} con un precio de {{ $detail->price }} Bs. <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp; {!! $features_list !!}
+                </li>
                 @php
                     $subtotal += $detail->quantity * $detail->price;
                 @endphp
