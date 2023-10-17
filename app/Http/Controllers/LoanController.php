@@ -600,7 +600,7 @@ class LoanController extends Controller
             
             try {
                 if (setting('servidores.whatsapp')) {
-                    Http::post(setting('servidores.whatsapp'), [
+                    Http::post(setting('servidores.whatsapp').'/send', [
                         'phone' => '591'.$ok->people->cell_phone,
                         'text' => 'Hola *'.$ok->people->first_name.' '.$ok->people->last_name1.' '.$ok->people->last_name2.'*.%0A%0A*SU SOLICITUD DE PRESTAMO HA SIDO APROBADA EXITOSAMENTE*%0A%0APase por favor por las oficinas para entregarle su solicitud de prestamos%0A%0AGracias🤝',
                         'image_url' => '',
@@ -947,7 +947,7 @@ class LoanController extends Controller
             $i=1;
             foreach($loanDayAgent as $item)
             {
-                $cadena=$cadena.($item->late==1?' SI':' NO').'            '.Carbon::parse($item->date)->format('d/m/Y').'         '.$item->amount.($i!=$cant?'%0A':'');
+                $cadena=$cadena.($item->late==1?' SI':' NO').'            '.Carbon::parse($item->date)->format('d/m/Y').'         '.$item->amount.($i!=$cant?' ':'');
                 $i++;
             }
             
@@ -962,8 +962,8 @@ CI: '.$loan->people->ci.'
 
               *DETALLE DEL PAGO*
 *ATRASO* | *DIAS PAGADO* | *TOTAL*
-___________________________________%0A'.
-    $cadena.'
+___________________________________
+'.$cadena.'
 ___________________________________
 TOTAL (BS)                           | '.number_format($request->amount,2).'
             
@@ -975,7 +975,7 @@ COD TRANS:      '.$transaction->transaction.'
 LOANSAPP V1';
 
                 if (setting('servidores.whatsapp')) {
-                    Http::post(setting('servidores.whatsapp'), [
+                    Http::post(setting('servidores.whatsapp').'/send', [
                         'phone' => '591'.$loan->people->cell_phone,
                         'text' => $message,
                         'image_url' => '',

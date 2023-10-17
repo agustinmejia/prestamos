@@ -19,6 +19,10 @@ class PawnRegisterPayment extends Model
         'observations'
     ];
 
+    public function pawn(){
+        return $this->belongsTo(PawnRegister::class, 'pawn_register_id');
+    }
+
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }

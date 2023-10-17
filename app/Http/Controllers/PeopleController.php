@@ -144,7 +144,7 @@ class PeopleController extends Controller
         try {
             
             if (setting('servidores.whatsapp')) {
-                Http::post(setting('servidores.whatsapp'), [
+                Http::post(setting('servidores.whatsapp').'/send', [
                     'phone' => '591'.$request->phonee,
                     'text' => 'Hola *'.$request->name.'*.%0A%0A*CAPRESI* te da la Bienvenida%0A%0APara verificar tus datos personales has clic en el enlace de abajo.%0A👇👇%0Ahttps://capresi.net/message/'.$request->id.'/verification',
                     'image_url' => '',
@@ -175,9 +175,9 @@ class PeopleController extends Controller
                 return response()->json(['error' => 'Ya existe una persona registrada con el mismo numero de CI']);
             }
             $request->merge(['register_userId'=>Auth::user()->id]);
-            $people = People::create($request->all());
+            $person = People::create($request->all());
             DB::commit();
-            return response()->json(['success' => 1, 'people' => $people]);
+            return response()->json(['success' => 1, 'person' => $person]);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json(['error' => $th->getMessage()]);

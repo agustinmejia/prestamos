@@ -169,7 +169,7 @@
                 </div>         
             </form>              
         </div>
-        <form action="{{ url('admin/people/store') }}" id="form-create-customer" method="POST">
+        <form action="{{ route('people.store') }}" id="form-create-customer" method="POST">
             <div class="modal fade" tabindex="-1" id="modal-create-customer" role="dialog">
                 <div class="modal-dialog modal-primary">
                     <div class="modal-content">
@@ -276,8 +276,7 @@
                 $('.btn-save-customer').val('Guardando...');
                 $.post($(this).attr('action'), $(this).serialize(), function(data){
 
-                    if(data.people.id){
-                       
+                    if(res.success){
                         toastr.success('Registrado exitosamente', 'Éxito');
                         $(this).trigger('reset');
                     }else{

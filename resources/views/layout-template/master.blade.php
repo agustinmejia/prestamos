@@ -669,12 +669,10 @@
             url: "{{route('template-loan-search.codeverification')}}",
             data: data,
             success: function (msg) {
-                    // alert("Se ha realizado el POST con exito "+msg);
-                    $("#codeVerification").attr("disabled", false)
-                    $("#codeVerification").on('paste', function(e){
-                      e.preventDefault();
-                      // alert('Esta acción está prohibida');
-                    })
+              $("#codeVerification").attr("disabled", false)
+              $("#codeVerification").on('paste', function(e){
+                e.preventDefault();
+              })
             }
         });
               
@@ -682,7 +680,6 @@
 
       function codev(loan, phone)
       {
-        // alert(loan_id)
         let code = $(`#codeVerification`).val() ? parseFloat($(`#codeVerification`).val()) : 0;
         let ok=0;
 
@@ -701,22 +698,9 @@
             $('#label-success').css('display', 'none'); 
             $('#label-error').css('display', 'block');
           }
-                      // alert(data)
         });
-        // alert(code)
       }
-
     </script>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        const socket = io("{{ env('SOCKET_URL').':'.env('SOCKET_PORT') }}");
-        socket.on('change prueba', data => {
-            $('#label_prueba').text(data.id);
-        });
-    </script>
-
   </body>
 
 </html>

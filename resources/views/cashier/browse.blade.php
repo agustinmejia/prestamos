@@ -77,17 +77,9 @@
                                                     {{-- <label class="label label-success">{{$item->status}}</label> --}}
 
                                                 </td>
-
-                                                
-
-
-
                                                 <td style="text-align: center">{{date('d/m/Y H:i:s', strtotime($item->created_at))}}<br><small>{{\Carbon\Carbon::parse($item->created_at)->diffForHumans()}}.</small></td>
                                                 <td style="text-align: center">@if($item->closed_at){{date('d/m/Y H:i:s', strtotime($item->closed_at))}}<br><small>{{\Carbon\Carbon::parse($item->closed_at)->diffForHumans()}}.@endif </small></td>
-                                
                                                 <td style="text-align: right">
-
-
                                                     <div class="btn-group" style="margin-right: 3px">
                                                         <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
                                                             Mas <span class="caret"></span>
@@ -107,11 +99,6 @@
                                                             @endif                
                                                         </ul>
                                                     </div>
-
-
-
-
-
                                                     @if ($item->status == 'abierta')
                                                         <a href="{{route('cashiers.amount', ['cashier'=>$item->id])}}" title="Editar" class="btn btn-sm btn-success">
                                                             <i class="voyager-dollar"></i> <span class="hidden-xs hidden-sm">Abonar Dinero</span>
@@ -122,41 +109,11 @@
                                                             <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Ver</span>
                                                         </a>
                                                     @endif
-                                                    
-                                         
-                                                    {{-- @if ($item->status == 'cerrada')
-                                                        
-                                                        <a href="#" title="Imprimir" class="btn btn-dark" onclick="closeWindow({{$item->id}})">
-                                                            <i class="glyphicon glyphicon-print"></i> <span class="hidden-xs hidden-sm">Imprimir cierre</span>
-                                                        </a>
-
-                                                    @endif --}}
-
                                                     @if ($item->status == "cierre pendiente")
                                                         <a href="{{route('cashiers.confirm_close',['cashier' => $item->id])}}" title="Ver" class="btn btn-sm btn-primary pull-right">
                                                             <i class="voyager-lock"></i> <span class="hidden-xs hidden-sm">Confirmar Cierre de Caja</span>
                                                         </a>
                                                     @endif
-                                                    {{-- <div class="no-sort no-click bread-actions text-right"> --}}
-                                                        {{-- @if(auth()->user()->hasPermission('read_income'))
-                                                            
-                                                            <a href="{{route('income_view',$item->id)}}" title="Ver" target="_blank" class="btn btn-sm btn-info view">
-                                                                <i class="voyager-file-text"></i> <span class="hidden-xs hidden-sm">Ver</span>
-                                                            </a>                                                                
-                                                        @endif
-                                                        @if($item->condicion == 1)
-                                                            @if(auth()->user()->hasPermission('edit_income'))
-                                                                <a href="" title="Editar" class="btn btn-sm btn-warning">
-                                                                    <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm">Editar</span>
-                                                                </a>
-                                                            @endif
-                                                            @if(auth()->user()->hasPermission('delete_income'))
-                                                                <button title="Anular" class="btn btn-sm btn-danger delete" data-toggle="modal" data-id="{{$item->id}}" data-target="#myModalEliminar">
-                                                                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Anular</span>
-                                                                </button>
-                                                            @endif
-                                                        @endif
-                                                    </div> --}}
                                                 </td>
                                             </tr>
                                         @empty
@@ -178,9 +135,6 @@
             </div>
         </div>
     </div>
-    
-
-
 @stop
 
 @section('css')
@@ -241,58 +195,42 @@
 @section('javascript')
     <script src="{{ url('js/main.js') }}"></script>
     <script>
-
-        $(function()
-        {
+        $(function() {
             $('#dataStyle').DataTable({
-                    language: {
-                            // "order": [[ 0, "desc" ]],
-                            sProcessing: "Procesando...",
-                            sLengthMenu: "Mostrar _MENU_ registros",
-                            sZeroRecords: "No se encontraron resultados",
-                            sEmptyTable: "Ningún dato disponible en esta tabla",
-                            sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                            sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
-                            sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
-                            sSearch: "Buscar:",
-                            sInfoThousands: ",",
-                            sLoadingRecords: "Cargando...",
-                            oPaginate: {
-                                sFirst: "Primero",
-                                sLast: "Último",
-                                sNext: "Siguiente",
-                                sPrevious: "Anterior"
-                            },
-                            oAria: {
-                                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                            },
-                            buttons: {
-                                copy: "Copiar",
-                                colvis: "Visibilidad"
-                            }
-                        },
-                        order: [[ 0, 'desc' ]],
+                language: {
+                    sProcessing: "Procesando...",
+                    sLengthMenu: "Mostrar _MENU_ registros",
+                    sZeroRecords: "No se encontraron resultados",
+                    sEmptyTable: "Ningún dato disponible en esta tabla",
+                    sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+                    sSearch: "Buscar:",
+                    sInfoThousands: ",",
+                    sLoadingRecords: "Cargando...",
+                    oPaginate: {
+                        sFirst: "Primero",
+                        sLast: "Último",
+                        sNext: "Siguiente",
+                        sPrevious: "Anterior"
+                    },
+                    oAria: {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    },
+                    buttons: {
+                        copy: "Copiar",
+                        colvis: "Visibilidad"
+                    }
+                },
+                order: [[ 0, 'desc' ]],
             });
-            
-         
         })
 
         $(document).ready(function(){
-            // socket.emit(`reload score`, {id: 1, user: 1});
-            // alert("{{App\Models\User::where('id',  1)->first()}}")
-            // let prueba = "{{App\Models\User::where('id',  1)->first()}}";
-            // alert(prueba)
-            
-
-
             @if(session('cashier_id'))
-                // let users = "{{ session('user') }}";
                 let user =@json(session('user'))
-          
                 let cashier_id = "{{ session('cashier_id') }}";
-                // alert(cashier_id)
-
                 socket.emit(`reload notificationCashierOpen`, {cashierRegister_id: cashier_id, auth: user});
             @endif
         });
@@ -329,22 +267,12 @@
         }
 
         function openWindow(id){
-            // window.open("{{ url('admin/cashiers/print/transfer') }}/"+id, "Entrega de fondos", `width=700, height=400`);
-            
-            // $url = route('print.open', ['cashier' => id]);
-            // alert(id)
             window.open("{{ route('print.open')}}/"+id, 'Apertura de caja', `width=1000, height=700`);
         }
-
 
         function closeWindow(id){
             window.open("{{ route('print.close')}}/"+id, 'Apertura de caja', `width=1000, height=700`);
         }
-
-        // @if(session('rotation_id'))
-        //     let rotation_id = "{{ session('rotation_id') }}";
-        //     window.open(`{{ url('admin/people/rotation') }}/${rotation_id}`, '_blank').focus();
-        // @endif
     </script>
 @stop
 

@@ -13,30 +13,12 @@ const io = require('socket.io')(server, {
     cors: { origin: "*"}
 });
 
-
-// io.on('connection', (socket) => {
-//     socket.on('chat message', (msg) => {
-//       console.log('message: ' + msg);
-//     });
-//   });
-
 io.on('connection', (socket) => {
     console.log('connection');
 
     socket.on('reload notificationCashierOpen', data => {
         io.emit(`change notificationCashierOpen`, data);
-        // console.log('message: ' + data.id);
     });
-
-    socket.on('reload prueba', data => {
-        io.emit(`change prueba`, data);
-        // console.log('message: ' + data.id);
-    });
-
-    // socket.on('chat message', (msg) => {
-    //     console.log('message: ' + msg);
-    // });
-
 
     socket.on('disconnect', (socket) => {
         console.log('Disconnect');

@@ -52,8 +52,6 @@ class CashierController extends Controller
 
     public function store(Request $request)
     {
-
-        // socket.emit(`reload score`, {id: text});
         // return $request;
         $cashier = Cashier::where('user_id', $request->user_id)->where('status', '!=', 'cerrada')->where('deleted_at', NULL)->first();
 

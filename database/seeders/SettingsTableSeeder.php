@@ -167,10 +167,21 @@ class SettingsTableSeeder extends Seeder
                 'id' => 15,
                 'key' => 'servidores.whatsapp',
                 'display_name' => 'Whatsapp',
-                'value' => '',
+                'value' => 'https://waserver2.ideacreativa.dev',
                 'details' => NULL,
                 'type' => 'text',
                 'order' => 10,
+                'group' => 'Servidores',
+            ),
+            14 => 
+            array (
+                'id' => 16,
+                'key' => 'servidores.image-from-url',
+                'display_name' => 'Generador de imágenes',
+                'value' => '',
+                'details' => NULL,
+                'type' => 'text',
+                'order' => 11,
                 'group' => 'Servidores',
             ),
         ));

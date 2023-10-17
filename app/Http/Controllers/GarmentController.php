@@ -665,33 +665,6 @@ class GarmentController extends Controller
                 $i++;
             }
 
-
-            Http::get('https://api.whatsapp.capresi.net/?number=59167285914&message=
-            *COMPROBANTE DE PAGO*
-    
-    CODIGO: '.$garment->code.'
-    FECHA: '.Carbon::parse($transaction->created_at)->format('d/m/Y H:i:s').'
-    CI: '.$garment->people->ci.'
-    BENEFICIARIO: '.$garment->people->last_name1.' '.$garment->people->last_name2.' '.$garment->people->first_name.'
-    
-                  *DETALLE DEL PAGO*
-    *DETALLES*                                | *TOTAL*
-    ____________________________________%0A'.
-        $cadena.'
-    ____________________________________
-    TOTAL (BS)                              | '.number_format($loanDayAgent->SUM('amount'),2).'
-                
-                    *ATENDIDO POR*
-    '.strtoupper($loanDayAgent[0]->agentType).':        '.strtoupper($loanDayAgent[0]->agent->name).'
-    COD TRANS:      '.$transaction->id.'
-    
-                
-    LOANSAPP V1');
-
-
-            // return $month;
-
-            // return 1;
             DB::commit();
             return redirect()->route('garments.show', ['garment' => $request->garment_id])->with(['message' => 'Mes Pagado exitosamente.', 'alert-type' => 'success', 'garment_id' => $garment->id, 'transaction_id'=>$transaction->id]);
 
@@ -823,40 +796,11 @@ class GarmentController extends Controller
                 }         
                 $i++;
             }
-
-
-            Http::get('https://api.whatsapp.capresi.net/?number=59167285914&message=
-            *COMPROBANTE DE PAGO*
-    
-    CODIGO: '.$garment->code.'
-    FECHA: '.Carbon::parse($transaction->created_at)->format('d/m/Y H:i:s').'
-    CI: '.$garment->people->ci.'
-    BENEFICIARIO: '.$garment->people->last_name1.' '.$garment->people->last_name2.' '.$garment->people->first_name.'
-    
-                  *DETALLE DEL PAGO*
-    *DETALLES*                                | *TOTAL*
-    ____________________________________%0A'.
-        $cadena.'
-    ____________________________________
-    TOTAL (BS)                              | '.number_format($loanDayAgent->SUM('amount'),2).'
-                
-                    *ATENDIDO POR*
-    '.strtoupper($loanDayAgent[0]->agentType).':        '.strtoupper($loanDayAgent[0]->agent->name).'
-    COD TRANS:      '.$transaction->id.'
-    
-                
-    LOANSAPP V1');
-
-
-            // return $month;
-
-            // return 1;
             DB::commit();
             return redirect()->route('garments.show', ['garment' => $garment_id])->with(['message' => 'Pagado exitosamente.', 'alert-type' => 'success', 'garment_id' => $garment->id, 'transaction_id'=>$transaction->id]);
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            return 0;
             return redirect()->route('garments.show', ['garment' => $garment_id])->with(['message' => 'Error, La caja no se encuentra abierta.', 'alert-type' => 'error']);
         }
     }

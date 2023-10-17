@@ -40,7 +40,7 @@ class TemplateController extends Controller
         
         try {
             if (setting('servidores.whatsapp')) {
-                Http::post(setting('servidores.whatsapp'), [
+                Http::post(setting('servidores.whatsapp').'/send', [
                     'phone' => '591'.$request->cell_phone,
                     'text' => 'CAPRESI%0A%0A*'.$aux.'* es tu codigo de verificación.%0A%0ANo lo compartas con nadie mas',
                     'image_url' => '',
@@ -86,7 +86,7 @@ _________________________________________
     Gracias🤝😊';
 
                 if (setting('servidores.whatsapp')) {
-                    Http::post(setting('servidores.whatsapp'), [
+                    Http::post(setting('servidores.whatsapp').'/send', [
                         'phone' => '591'.$phone,
                         'text' => $message,
                         'image_url' => '',

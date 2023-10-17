@@ -128,28 +128,6 @@
         <script type="text/javascript" src="{{ voyager_asset('js/app.js') }}"></script>
 
         <script>
-            //para que cada ves que cambie de pagina verfifique si hay prestamos con dias atrazados
-            $(function() {             
-                $.get('{{route('loans-loanDay.late')}}', function (data) {
-                            // alert(2);
-                });
-                //     }, 8000 //10000 en medio minuto se recargará solo la campana de notificación..
-                // );
-
-                $.get('{{route('garments-month.late')}}', function (data) {
-                            // alert(2);
-                });
-
-                // toastr.success('Detalle agregado', 'Exito')
-                // toastr.info('<a href="{{url('admin#rowCashierOpen')}}" style="font-size: 15px; color:black">Tiene una Caja Pendiente Asignada</a>', 'Notificación',
-                //     {   "positionClass" : "toast-bottom-right",
-                //         "href" : "admins"
-                //     }
-                // );
-            });
-        </script>
-
-        <script>
             @if(Session::has('alerts'))
                 let alerts = {!! json_encode(Session::get('alerts')) !!};
                 helpers.displayAlerts(alerts, toastr);
@@ -172,110 +150,62 @@
 
         <script src="{{ asset('vendor/momentjs/moment.min.js') }}"></script>
         <script src="{{ asset('vendor/momentjs/moment-with-locales.min.js') }}"></script>
-
-        {{-- <script src="{{ asset('js/timbre.js') }}"></script> --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js"></script>
-            <script>       
-                $(function() {
-                    // $.get('{{route('getAuth')}}', function (data) {    
-                    //     alert(data)      
-                    // })
-                    notification();
-                });
-
-                function notification()
-                {
-                    let count = 0;
-                    $.get('{{route('notification.cashierOpen')}}', function (data) {    
-                        count = 1;
-                        
-                        if(data)
-                        {
-                            var luz = '<span class="badge badge-danger navbar-badge" id="bandeja">'+count+'</span>';
-                            $('#countNotification').html(luz)        
-                            $('#notificationInbox').append(`
-                                <a href="{{url('admin#rowCashierOpen')}}" style="font-size: 16px; color:black"><i class="fa-solid fa-cash-register"></i><small> Tiene una Caja Pendiente Asignada</small></a>
-                                <hr>
-                            `);
-
-                            // setTimeout(function(){
-                            //     alert('dos');
-                            // }, 1000)
-                            setInterval(() => {
-                            
-                                    $('#bellNotification').html('<i class="voyager-bell" style="font-size: 1.8em; color : #ff0808"></i>');
-                        
-                                setTimeout(function(){
-                                    $('#bellNotification').html('<i class="fa-solid fa-bell" style="font-size: 1.8em; color : #22a7f0"></i>')  ;
-                                }, 500)
-                                
-
-                            }, 1000);
-                        }
-                        else
-                        {
-                            $('#countNotification').html('')
-                            $('#notificationInbox').html('')
-                        }       
-                    })
-                }
-
-                // function getAuth()
-                // {
-                //     $.get('{{route('getAuth')}}', function (data) {    
-                //         return data;
-                //     })
-                // }
-            </script>
-
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-            <script>
-                const socket = io("{{ env('SOCKET_URL').':'.env('SOCKET_PORT') }}");
-
-            
-                socket.on(`change notificationCashierOpen`, data => {
-                    // let auth =  @json(App\Models\User::where('id',  1)->first());
-                    
-                    let auth =  @json(Auth::user());
-
-
-                    if(auth.id == data.auth.id)
+        <script>       
+            $(function() {
+                notification();
+            });
+            function notification()
+            {
+                let count = 0;
+                $.get('{{route('notification.cashierOpen')}}', function (data) {    
+                    count = 1;
+                    if(data)
                     {
-                        notification()
-                        toastr.info('<a href="{{url('admin#rowCashierOpen')}}" style="font-size: 15px; color:black">Hola '+data.auth.name+', Tiene una Caja Pendiente Asignada</a>', 'Notificación',
-                            {   "positionClass" : "toast-bottom-right",
-                                "timeOut": "10000",
-                                "closeButton": true,
-                                "progressBar": true,
-                            }
-                        );
+                        var luz = '<span class="badge badge-danger navbar-badge" id="bandeja">'+count+'</span>';
+                        $('#countNotification').html(luz)        
+                        $('#notificationInbox').append(`
+                            <a href="{{url('admin#rowCashierOpen')}}" style="font-size: 16px; color:black"><i class="fa-solid fa-cash-register"></i><small> Tiene una Caja Pendiente Asignada</small></a>
+                            <hr>
+                        `);
+                        setInterval(() => {
+                            $('#bellNotification').html('<i class="voyager-bell" style="font-size: 1.8em; color : #ff0808"></i>');
+                            setTimeout(function(){
+                                $('#bellNotification').html('<i class="fa-solid fa-bell" style="font-size: 1.8em; color : #22a7f0"></i>')  ;
+                            }, 500)
+                        }, 1000);
                     }
-                    
-                });
-
-                // $(function() {
-
-                //     toastr.info('<a style="font-size: 15px; color:black">Hola, Tiene una Caja Pendiente Asignada</a>', 'Notificación',
-                //             {   "positionClass" : "toast-bottom-right",
-                //                 "timeOut": "5000",
-                //                 "closeButton": true,
-                //                 "progressBar": true,
-                //             }
-                //         );
-
-                // });
-
-            
-            </script>
-
-            {{-- ########################################################################### --}}
-
+                    else
+                    {
+                        $('#countNotification').html('')
+                        $('#notificationInbox').html('')
+                    }       
+                })
+            }
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            const socket = io("{{ env('SOCKET_URL').':'.env('SOCKET_PORT') }}");
+            socket.on(`change notificationCashierOpen`, data => {
+                let auth =  @json(Auth::user());
+                if(auth.id == data.auth.id)
+                {
+                    notification()
+                    toastr.info('<a href="{{url('admin#rowCashierOpen')}}" style="font-size: 15px; color:black">Hola '+data.auth.name+', Tiene una Caja Pendiente Asignada</a>', 'Notificación',
+                        {   "positionClass" : "toast-bottom-right",
+                            "timeOut": "10000",
+                            "closeButton": true,
+                            "progressBar": true,
+                        }
+                    );
+                }
+            });
+        </script>
         @include('voyager::media.manager')
 
         @yield('javascript')
         @stack('javascript')
-        @if(!empty(config('voyager.additional_js')))<!-- Additional Javascript -->
+        @if(!empty(config('voyager.additional_js')))
             @foreach(config('voyager.additional_js') as $js)<script type="text/javascript" src="{{ asset($js) }}"></script>@endforeach
         @endif
 
@@ -292,6 +222,5 @@
                 });
             });
         </script>
-
     </body>
 </html>

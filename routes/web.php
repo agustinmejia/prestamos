@@ -26,6 +26,8 @@ use App\Http\Controllers\ReportManagerController;
 use App\Http\Controllers\PawnController;
 use App\Http\Controllers\ItemTypesController;
 
+use Illuminate\Support\Facades\Http;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,13 +46,24 @@ Route::get('login', function () {
     return redirect('admin/login');
 })->name('login');
 
-// Route::get('/', function () {
-//     return redirect('admin');
+// Route::get('/test', function () {
+
+//     $response = Http::get('http://127.0.0.1:3000/screenshot?url=https://github.com/agustinmejia/image-from-url');
+//     if($response->ok()){
+//         $res = json_decode($response->body());
+//         Http::post('http://127.0.0.1:3001/send', [
+//             'phone' => '59167662833',
+//             'text' => 'Gracias por su preferencia',
+//             'image_url' => $res->url,
+//         ]);
+//     }
 // });
 
 //Ruta para poner el sistema en mantenimiento
 Route::get('/development', [DevelopmentController::class , 'development'])->name('development');
 
+// Ruta que renderiza el recibo de pago que se envía al usuario
+Route::get('pawn/payment/{id}/notification', [PawnController::class, 'payment_notification'])->name('pawn.payment.notification');
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
@@ -160,6 +173,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('pawn/list/ajax', [PawnController::class, 'list'])->name('pawn.list');
     Route::get('pawn/{id}/print', [PawnController::class, 'print'])->name('pawn.print');
     Route::post('pawn/payment/store', [PawnController::class, 'payment_store'])->name('pawn.payment');
+    Route::get('pawn/payment/{id}/notification', [PawnController::class, 'payment_notification'])->name('pawn.payment.notification');
 
     // ##################################################################################################################################
     // ###########################################################       FIN       #####################################################

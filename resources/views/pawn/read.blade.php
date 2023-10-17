@@ -186,6 +186,14 @@
                                             <td>{{ $item->observations }}</td>
                                             <td>{{ $item->user->name }}</td>
                                             <td class="no-sort no-click bread-actions text-right">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="margin-right: 5px">
+                                                        Más <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu" style="left: -90px !important">
+                                                        <li><a href="{{ route('pawn.payment.notification', $item->id) }}" title="Reenviar notificación" target="_blank">Reenviar notificación</a></li>
+                                                    </ul>
+                                                </div>
                                                 <a href="#" title="Imprimir" class="btn btn-sm btn-danger">
                                                     <i class="fa fa-print"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
                                                 </a>

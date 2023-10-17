@@ -36,7 +36,7 @@
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <small for="people_id">Beneficiario del Prestamo</small>
-                                    <select name="people_id" class="form-control select2" id="select-people_id" required></select>
+                                    <select name="people_id" class="form-control" id="select-people_id" required></select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <small for="interest_rate">Tasa de interes</small>
@@ -222,9 +222,6 @@
             width: 120px;
             border: 0px !important
         }
-        .select2-container--open{
-            z-index: 100
-        }
     </style>
 @stop
 
@@ -260,7 +257,7 @@
             $('#select-item_id').select2({
                 language: {
                     noResults: function() {
-                        return `Resultados no encontrados <button class="btn btn-link" data-toggle="modal" data-target="#type-items-modal">Crear nuevo</a>`;
+                        return `Resultados no encontrados <button class="btn btn-link" onclick="dismissSelect2()" data-toggle="modal" data-target="#type-items-modal">Crear nuevo</a>`;
                     },
                 },
                 escapeMarkup: function(markup) {
@@ -271,6 +268,7 @@
             $('#select-item_id').change(function(){
                 let type = $('#select-item_id option:selected').data('item');
                 if (type) {
+                    console.log(type)
                     // Obetener la lista de características de cada tipo de item
                     let features = '';
                     type.category.features.map(item => {
@@ -327,7 +325,7 @@
                     if(res.success){
                         $('#person-modal').modal('hide');
                         toastr.success('Beneficiario registrado correctamente', 'Bien hecho!');
-                        $('#form-person').trigger('submit');
+                        $(this).trigger('reset');
                     }else{
                         toastr.error(res.error, 'Error');
                     }
@@ -355,6 +353,7 @@
         });
 
         function createPerson(){
+            dismissSelect2();
             $('#person-modal').modal('show');
         }
 
@@ -414,6 +413,11 @@
             $(`#tr-features-${index}`).remove();
             generateNumber();
             getTotal();
+        }
+
+        function dismissSelect2(){
+            $('#select-people_id').select2("close");
+            $('#select-item_id').select2("close");
         }
     </script>
 @stop
