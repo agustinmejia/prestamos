@@ -1,5 +1,0 @@
-cambiar el nombre de la migracion 2022_12_16_123145_update_user_table a 2014_10_12_000001_update_user_table
-ejecutar migraciones
-ALTER TABLE `item_features` ADD `required` SMALLINT(1) NULL DEFAULT '1' AFTER `description`;
-
-crear cliente desde la vista de registor de empeño

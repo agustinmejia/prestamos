@@ -25,6 +25,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportManagerController;
 use App\Http\Controllers\PawnController;
 use App\Http\Controllers\ItemTypesController;
+use App\Http\Controllers\HomeController;
 
 use Illuminate\Support\Facades\Http;
 
@@ -63,7 +64,7 @@ Route::get('login', function () {
 Route::get('/development', [DevelopmentController::class , 'development'])->name('development');
 
 // Ruta que renderiza el recibo de pago que se envía al usuario
-Route::get('pawn/payment/{id}/notification', [PawnController::class, 'payment_notification'])->name('pawn.payment.notification');
+Route::get('admin/pawn/payment/{id}/notification', [HomeController::class, 'payment_notification'])->name('pawn.payment.notification');
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();
@@ -173,7 +174,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Route::get('pawn/list/ajax', [PawnController::class, 'list'])->name('pawn.list');
     Route::get('pawn/{id}/print', [PawnController::class, 'print'])->name('pawn.print');
     Route::post('pawn/payment/store', [PawnController::class, 'payment_store'])->name('pawn.payment');
-    Route::get('pawn/payment/{id}/notification', [PawnController::class, 'payment_notification'])->name('pawn.payment.notification');
 
     // ##################################################################################################################################
     // ###########################################################       FIN       #####################################################

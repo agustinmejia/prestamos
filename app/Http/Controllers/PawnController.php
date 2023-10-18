@@ -211,9 +211,4 @@ class PawnController extends Controller
             return response()->json(['error' => 1]);
         }
     }
-
-    public function payment_notification($id){
-        $payment = PawnRegisterPayment::with(['pawn.person'])->where('id', $id)->first();
-        dd($payment);
-    }
 }
