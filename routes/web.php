@@ -48,7 +48,6 @@ Route::get('login', function () {
 })->name('login');
 
 // Route::get('/test', function () {
-
 //     $response = Http::get('http://127.0.0.1:3000/screenshot?url=https://github.com/agustinmejia/image-from-url');
 //     if($response->ok()){
 //         $res = json_decode($response->body());

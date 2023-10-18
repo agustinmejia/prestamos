@@ -37,8 +37,8 @@
             }
             .card{
                 width: 100%;
-                margin-left: 1rem;
-                margin-right: 1rem;
+                margin: 1rem;
+                /* margin-right: 1rem; */
                 border: 1px solid var(--color-dark-100);
                 border-radius: 20px;
                 background-color: var(--color-litgh-100);
