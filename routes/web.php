@@ -27,8 +27,6 @@ use App\Http\Controllers\PawnController;
 use App\Http\Controllers\ItemTypesController;
 use App\Http\Controllers\HomeController;
 
-use Illuminate\Support\Facades\Http;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,23 +45,12 @@ Route::get('login', function () {
     return redirect('admin/login');
 })->name('login');
 
-// Route::get('/test', function () {
-//     $response = Http::get('http://127.0.0.1:3000/screenshot?url=https://github.com/agustinmejia/image-from-url');
-//     if($response->ok()){
-//         $res = json_decode($response->body());
-//         Http::post('http://127.0.0.1:3001/send', [
-//             'phone' => '59167662833',
-//             'text' => 'Gracias por su preferencia',
-//             'image_url' => $res->url,
-//         ]);
-//     }
-// });
-
 //Ruta para poner el sistema en mantenimiento
 Route::get('/development', [DevelopmentController::class , 'development'])->name('development');
 
 // Ruta que renderiza el recibo de pago que se envía al usuario
 Route::get('admin/pawn/payment/{id}/notification', [HomeController::class, 'payment_notification'])->name('pawn.payment.notification');
+Route::get('admin/loans/payment/{id}/notification', [TransactionController::class, 'payment_notification'])->name('loans.payment.notification');
 
 Route::group(['prefix' => 'admin', 'middleware' => 'loggin'], function () {
     Voyager::routes();

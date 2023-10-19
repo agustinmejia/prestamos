@@ -32,6 +32,9 @@ use ReturnTypeWillChange;
 use function PHPSTORM_META\type;
 use function PHPUnit\Framework\returnSelf;
 
+// Queues
+use App\Jobs\SendRecipe;
+
 class LoanController extends Controller
 {
     public function __construct()
@@ -982,15 +985,19 @@ LOANSAPP V1';
                     ]);
                 }
             } catch (\Throwable $th) {
-                //throw $th;
+                
             }
 
-            // return 1;
+            // Enviar notificación de pago
+            // if($loan->people->cell_phone){
+            //     $url = route('loans.payment.notification', $transaction->id);
+            //     SendRecipe::dispatch($url, $loan->people->cell_phone);
+            // }
+
             DB::commit();
             return redirect()->route('loans-daily.money', ['loan' => $request->loan_id, 'cashier_id'=>$request->cashier_id])->with(['message' => 'Prestamo aprobado exitosamente.', 'alert-type' => 'success', 'loan_id' => $loan->id, 'transaction_id'=>$transaction->id]);
         } catch (\Throwable $th) {
             DB::rollBack();
-            // return 0;
             return redirect()->route('loans-daily.money', ['loan' => $request->loan_id, 'cashier_id'=>$request->cashier_id])->with(['message' => 'Ocurrió un error.', 'alert-type' => 'error']);
         }        
     }

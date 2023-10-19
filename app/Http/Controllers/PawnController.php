@@ -15,6 +15,9 @@ use App\Models\PawnRegisterDetailFeature;
 use App\Models\PawnRegisterPayment;
 use App\Models\ItemType;
 
+// Queues
+use App\Jobs\SendRecipe;
+
 class PawnController extends Controller
 {
     public function __construct()
@@ -181,7 +184,7 @@ class PawnController extends Controller
 
     public function payment_store(Request $request){
         try {
-            PawnRegisterPayment::create([
+            $payment = PawnRegisterPayment::create([
                 'pawn_register_id' => $request->id,
                 'user_id' => Auth::user()->id,
                 'date' => $request->date,
@@ -203,6 +206,12 @@ class PawnController extends Controller
             if ($total_payment >= ($total + $interest_rate)) {
                 $pawn->status = 'pagado';
                 $pawn->save();
+            }
+
+            // Enviar notificación de pago
+            if($pawn->person->cell_phone){
+                $url = route('pawn.payment.notification', $payment->id);
+                SendRecipe::dispatch($url, $pawn->person->cell_phone);
             }
 
             return response()->json(['success' => 1]);

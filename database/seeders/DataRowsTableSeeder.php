@@ -2396,7 +2396,7 @@ class DataRowsTableSeeder extends Seeder
                 'display_name' => 'Creado',
                 'required' => 0,
                 'browse' => 1,
-                'read' => 0,
+                'read' => 1,
                 'edit' => 0,
                 'add' => 0,
                 'delete' => 0,

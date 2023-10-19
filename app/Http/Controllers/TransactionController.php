@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Transaction;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+
+// Models
 use App\Models\Loan;
 use App\Models\LoanDay;
 use App\Models\LoanDayAgent;
 use App\Models\LoanRoute;
 use App\Models\LoanRequirement;
+use App\Models\Transaction;
 use App\Models\People;
-use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -29,7 +31,7 @@ class TransactionController extends Controller
             ->leftJoin('users as ud', 'ud.id', 'lda.deleted_userId')
             ->where('l.id', $loan)
             ->where('l.deleted_at', null)
-            ->select('l.id as loan', DB::raw('SUM(lda.amount)as amount'), 'u.name', 'lda.agentType', 'p.id as people', 'lda.transaction_id', 'ud.name as eliminado', 't.transaction', 't.deleted_at', 't.created_at')
+            ->select('l.id as loan', DB::raw('SUM(lda.amount)as amount'), 'u.name', 'lda.agentType', 'p.id as people', 'p.cell_phone as people_phone', 'lda.transaction_id', 'ud.name as eliminado', 't.transaction', 't.deleted_at', 't.created_at')
             ->groupBy('loan', 'transaction')
             ->orderBy('transaction', 'ASC')
             ->get();
@@ -37,5 +39,10 @@ class TransactionController extends Controller
             // return $data;
 
         return view('transaction.browse', compact('data'));
+    }
+
+    public function payment_notification($id){
+        $transaction = Transaction::with(['payments.agent', 'payments.loanDay.loan.people'])->where('id', $id)->first();
+        return view('loans.print.notification', compact('transaction'));
     }
 }

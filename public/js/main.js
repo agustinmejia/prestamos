@@ -37,21 +37,23 @@ function customDataTable(url, columns = [], order = 0, orderBy = 'desc'){
     });
 }
 
-function customSelect(select, url, templateResult, templateSelection, dropdownParent){
+function customSelect(select, url, templateResult, templateSelection, dropdownParent, createNew){
     $(select).select2({
         dropdownParent: dropdownParent ? dropdownParent : null,
+        language: {
+            noResults: function() {
+                return `Resultados no encontrados ${createNew ? '<button class="btn btn-link" onclick="'+createNew+'">Crear nuevo</a>' : ''}`;
+            },
+        },
+        escapeMarkup: function(markup) {
+            return markup;
+        },
         ajax: { 
             allowClear: true,
             url,
             type: "get",
             dataType: 'json',
             delay: 500,
-            // data:  (params) =>  {
-            //     var query = {
-            //         search: params.term
-            //     }
-            //     return query;
-            // },
             processResults: function (response) {
                 return {
                     results: response
@@ -93,3 +95,53 @@ function formatResultPeople(data) {
 
     return $container;
 }
+
+$(document).ready(function(){
+    $('.btn-notification').click(async function(e){
+        if (whatsappServer && imagesGeneratorServer) {
+            $('body').loading({message: 'Enviando...'});
+            e.preventDefault();
+            let route = $(this).attr('href');
+            var phone = $(this).data('phone');
+            if (phone) {
+                let image = await fetch(`${imagesGeneratorServer}/generate?url=${route}`)
+                                    .then(res => {
+                                        if (!res.ok) {
+                                            return null;
+                                        }
+                                        return res.json();
+                                    })
+                                    .then(res => res);
+                if(image){
+                    let body = {
+                        phone: `591${phone}`,
+                        text: '',
+                        image_url: image.url
+                    }
+
+                    fetch(`${whatsappServer}/send`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(body)
+                    })
+                        .then(res => {
+                            if (!res.ok) {
+                                return null;
+                            }
+                            return res.json();
+                        });
+                    toastr.success('Recibo reenviado', 'Bien hecho');
+                }else{
+                    toastr.error('No se puedo generar el recibo', 'Error');
+                }
+                $('body').loading('toggle');
+            } else {
+                toastr.warning('Número de celular vacío', 'Advertencia');
+            }
+        } else {
+            toastr.warning('Uno de los servidores no está configurado', 'Advertencia');
+        }
+    });
+});

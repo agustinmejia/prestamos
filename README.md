@@ -4,10 +4,30 @@
 
 # Sistema de Administración de Prestamos
 
+## Requisitos
+- php ^7.3|^8.0
+- mysql
+- Extensiones de php (mbstring, intl, dom, gd, xml, zip, mbstring, mysql)
+
 ## Instalación
 ```
 composer install
 cp .env.example .env
 php artisan prestamos:install
 chmod -R 777 storage bootstrap/cache
+```
+
+## Despliegue
+- Local
+
+```
+node server
+php artisan queue:work --queue=high,default
+```
+
+- Producción (Usando PM2)
+
+```
+pm2 start server.js --name "prestamos-js"
+pm2 start worker.yml
 ```

@@ -1,0 +1,2 @@
+php artisan migrate
+set .env QUEUE_CONNECTION=database

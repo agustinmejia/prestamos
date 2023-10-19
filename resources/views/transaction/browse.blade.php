@@ -24,6 +24,7 @@
                                     <table id="dataStyle" class="table-hover">
                                         <thead>
                                             <tr>
+                                                <th>ID</th>
                                                 <th style="text-align: center; width:12%">N&deg; Transacción</th>
                                                 <th style="text-align: center">Monto</th>
                                                 <th style="text-align: center">Fecha</th>
@@ -32,9 +33,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($data as $item)
+                                            @forelse ($data as $item)
                                                 <tr>
-                                                    {{-- <td style="text-align: center">{{$item->id}}</td> --}}
+                                                    <td>{{ $item->loan }}</td>
                                                     <td style="text-align: center">{{$item->transaction}}</td>
                                                     <td style="text-align: center">
                                                         @if ($item->deleted_at)
@@ -50,13 +51,20 @@
                                                     <td style="text-align: center">{{$item->agentType}} <br> {{$item->name}}</td>
                                                     <td class="no-sort no-click bread-actions text-right">
                                                         @if(!$item->deleted_at)
+                                                            <a href="{{ route('loans.payment.notification', $item->transaction_id) }}" data-phone="{{ $item->people_phone }}" class="btn btn-success btn-notification" title="Reenviar reibo">
+                                                                <i class="fa fa-paper-plane"></i>
+                                                            </a>
                                                             <a onclick="printDailyMoney({{$item->loan}}, {{$item->transaction_id}})" title="Imprimir"  class="btn btn-danger">
                                                                 <i class="glyphicon glyphicon-print"></i>
                                                             </a>
                                                         @endif
                                                     </td>
                                                 </tr>
-                                            @endforeach                                                                               
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6">No hay datos registrados</td>
+                                                </tr>
+                                            @endforelse
                                         </tbody>
                                     </table>
                                 </div>
@@ -76,35 +84,11 @@
     @endsection
 
     @section('javascript')
+        <script src="{{ url('js/main.js') }}"></script>
         <script>
             $(document).ready(function(){
                 $('#dataStyle').DataTable({
-                    language: {
-                        sProcessing: "Procesando...",
-                        sLengthMenu: "Mostrar _MENU_ registros",
-                        sZeroRecords: "No se encontraron resultados",
-                        sEmptyTable: "Ningún dato disponible en esta tabla",
-                        sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                        sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
-                        sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
-                        sSearch: "Buscar:",
-                        sInfoThousands: ",",
-                        sLoadingRecords: "Cargando...",
-                        oPaginate: {
-                            sFirst: "Primero",
-                            sLast: "Último",
-                            sNext: "Siguiente",
-                            sPrevious: "Anterior"
-                        },
-                        oAria: {
-                            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                        },
-                        buttons: {
-                            copy: "Copiar",
-                            colvis: "Visibilidad"
-                        }
-                    },
+                    language,
                     order: [[ 0, 'desc' ]],
                 })
             });

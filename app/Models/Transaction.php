@@ -10,4 +10,8 @@ class Transaction extends Model
     use HasFactory;
     
     protected $fillable = ['transaction', 'type', 'deleted_at'];
+
+    public function payments() {
+        return $this->hasMany(LoanDayAgent::class, 'transaction_id');
+    }
 }

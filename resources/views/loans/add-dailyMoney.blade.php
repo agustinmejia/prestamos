@@ -83,22 +83,12 @@
 
                             <h3 id="h3" style="text-align: center"><i class="fa-solid fa-calendar-days"></i> {{$loan->code}}</h3>
                             <hr>
-                            {{-- @if ($cashier_id==0 && $loan->debt != 0 )  
-                                    <div class="alert alert-warning">
-                                        <strong>Advertencia:</strong>
-                                        <p>No puedes abonar dinero al prestamo.</p>
-                                    </div>
-                            @endif --}}
                             @if (!$cashier)
                                 <div class="alert alert-warning">
                                     <strong>Advertencia:</strong>
                                     <p>No puedes abonar dinero al prestamo.</p>
                                 </div>
                             @endif
-
-                            <div class="col-md-12">
-                                <button type="button" onclick="javascript:imprim1(imp1);">Imprimir</button>
-                            </div>
                             
                             <div class="col-md-8" id="imp1">
                                 
@@ -260,14 +250,8 @@
                                                                     @endif
                                                                     @if ($loan->loanDay[$number-1]->debt==0 )                                        
                                                                         <img src="{{ asset('images/icon/pagado.png') }}" width="70px">                                                                            
-                                                                    @endif 
-                                                                                                                                                                                                     
+                                                                    @endif                                                                                                                                
                                                                 @endif
-                                                                  
-                                                                
-                                                                
-                                                                
-                                                               
                                                             </td>                                                                                                                                             
                                                         @else
                                                             <td style="height: 80px; text-align: center"></td>                                                                                           
@@ -417,6 +401,10 @@
                                 <div class="row">
                                     <small>Observación</small>
                                     <textarea name="observation" id="observation" disabled class="form-control text" cols="30" rows="3">{{$loan->observation}}</textarea>
+                                </div>
+                                <br>
+                                <div class="row text-right">
+                                    <button type="button" class="btn btn-danger" title="Imprimir calendario" onclick="javascript:imprim1(imp1);">Imprimir <i class="fa fa-print"></i></button>
                                 </div>
                             </div>
 

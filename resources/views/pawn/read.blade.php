@@ -192,7 +192,7 @@
                                                     </button>
                                                     <ul class="dropdown-menu" role="menu" style="left: -90px !important">
                                                         @if ($pawn->person->cell_phone)
-                                                        <li><a href="{{ route('pawn.payment.notification', $item->id) }}" class="btn-notification" title="Reenviar recibo" target="_blank">Reenviar recibo</a></li>
+                                                        <li><a href="{{ route('pawn.payment.notification', $item->id) }}" data-phone="{{ $pawn->person->cell_phone }}" class="btn-notification" title="Reenviar recibo">Reenviar recibo</a></li>
                                                         @endif
                                                     </ul>
                                                 </div>
@@ -230,37 +230,7 @@
     <script>
         moment.locale('es');
         $(document).ready(function () {
-            var whatsappServer = "{{ setting('servidores.whatsapp') }}";
-            var imagesGeneratorServer = "{{ setting('servidores.image-from-url') }}";
-            var phone = "{{ $pawn->person->cell_phone }}"
-            $('.btn-notification').click(async function(e){
-                if (whatsappServer && imagesGeneratorServer) {
-                    e.preventDefault();
-                    let route = $(this).attr('action');
-                    let image = await fetch(`${imagesGeneratorServer}/generate?url=${route}`)
-                                        .then(res => {
-                                            if (!res.ok) {
-                                                return null;
-                                            }
-                                            return res.json();
-                                        })
-                                        .then(res => res);
-                    if(image){
-                        let body = {
-                            phone: `591${phone}`,
-                            text: '',
-                            image_url: image
-                        }
-                        $.post(`${whatsappServer}/send`, body, function(res){
-                            toastr.warning('Recibo reenviado', 'Bien hecho');
-                        });
-                    }else{
-                        toastr.warning('No se puedo generar el recibo', 'Error');
-                    }
-                } else {
-                    toastr.warning('Uno de los servidores no está configurado', 'Advertencia');
-                }
-            });
+            
         });
     </script>
 @stop
