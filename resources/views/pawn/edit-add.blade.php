@@ -268,7 +268,6 @@
             $('#select-item_id').change(function(){
                 let type = $('#select-item_id option:selected').data('item');
                 if (type) {
-                    console.log(type)
                     // Obetener la lista de características de cada tipo de item
                     let features = '';
                     type.category.features.map(item => {
@@ -276,7 +275,7 @@
                             <tr id="tr-features-${number_features}">
                                 <td style="width:120px !important"><input type="hidden" name="features_${index}[]" value="${item.id}" /><b>${item.name}</b>&nbsp;</td>
                                 <td><input type="text" name="features_value_${index}[]" ${item.required ? 'required' : ''} /></td>
-                                <td><button type="button" class="btn-danger" onclick="removeTrFeature(${number_features})">x</button></td>
+                                <td><button type="button" class="btn-danger" onclick="removeTrFeature(${number_features})" ${item.required ? 'disabled' : ''}>x</button></td>
                             </tr>`;
                             number_features++;
                     });

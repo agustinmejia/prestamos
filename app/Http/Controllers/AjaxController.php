@@ -35,50 +35,32 @@ class AjaxController extends Controller
     }
     public function lateGarment()
     {
-        // $date = date("2024-04-05");
         $date = date("Y-m-d");
         $data = Garment::where('deleted_at', null)->where('status', 'entregado')->get();
         foreach($data as $item)
         {
             $garment = Garment::where('id', $item->id)->first();
             $month = GarmentsMonth::where('garment_id', $garment->id)->where('deleted_at', null)->get();
-
-
             $monthMax = $month->max();
-
             if($date > $monthMax->finish)
             {
                 $monthFirst =$month->first();
-
                 $monthCant = $month->count()+1;
-
                 $date = date("Y-m-d",strtotime($monthFirst->start));
-
                 $diaInicio = date("d",strtotime($date));
-
                 $mesInicio = date("Y-m",strtotime($date));
                 $mesFin = date("Y-m-d",strtotime($mesInicio."+ ".$monthCant." month"));
-                // return $mesFin;
-
-
                 $anioSig = date("Y",strtotime($mesFin));
                 $mesSig = date("m",strtotime($mesFin));
                 $cantidadDiasFin = cal_days_in_month(CAL_GREGORIAN, $mesSig, $anioSig);
 
-                // return $cantidadDiasFin;
-                // return $diaInicio;
-
-                if($diaInicio <= $cantidadDiasFin)
-                {
+                if($diaInicio <= $cantidadDiasFin) {
                     $fechaFin = $anioSig.'-'.$mesSig.'-'.$diaInicio;
-                }
-                else
-                {
+                } else {
                     $fechaFin = $anioSig.'-'.$mesSig.'-'.$cantidadDiasFin;
                 }
 
-                if($diaInicio == 31 && $cantidadDiasFin == 31)
-                {
+                if($diaInicio == 31 && $cantidadDiasFin == 31) {
                     $fechaFin = $anioSig.'-'.$mesSig.'-30';
                 }                
 
@@ -92,30 +74,20 @@ class AjaxController extends Controller
                 $garment->update(['amountTotal'=>$garment->amountTotal+$garment->amountPorcentage]);
 
                 $month = GarmentsMonth::where('garment_id', $garment->id)->where('deleted_at', null)->where('status', 'pendiente')->get();
-                // return $month->count();
-                $garment->update(['monthCant'=>$month->count()]);
+                $garment->update(['monthCant' => $month->count()]);
             }
         }
         return true;
-
     }
-
-
-
-
 
     public function notificationLate()
     {
-        // 'notificationDate',
-        // 'notificationQuantity'
-
         $data = DB::table('loans as l')
             ->join('loan_days as ld', 'ld.loan_id', 'l.id')
             ->join('people as p', 'p.id', 'l.people_id')
             ->where('l.deleted_at', null)
             ->where('ld.late', 1)
             ->where('ld.debt', '>', 0)
-            // ->where('')
             ->whereDate('l.notificationDate', '<', date('Y-m-d'))
             ->select('l.id as loan', 'l.dateDelivered', 'p.id as people', 'p.first_name', 'p.last_name1', 'p.last_name2', 'p.cell_phone', 'p.ci', 'l.code')
             ->groupBy('loan')

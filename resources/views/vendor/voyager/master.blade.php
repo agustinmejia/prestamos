@@ -222,6 +222,12 @@
                 $('.form-submit').submit(function(){
                     $('.form-submit .btn-submit').attr('disabled', 'disabled');
                 });
+
+                // Actualizar estado de cuotas atrasadas
+                $.get("{{ route('loans-loanDay.late') }}", function (data) {
+                });
+                $.get("{{ route('garments-month.late') }}", function (data) {
+                });
             });
         </script>
     </body>
