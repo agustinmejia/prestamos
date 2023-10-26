@@ -836,22 +836,16 @@ class LoanController extends Controller
         return view('loans.add-dailyMoney', compact('loan', 'route', 'loanday', 'register', 'date', 'cashier_id', 'cantMes', 'cashier'));
     }
 // funcion para guardar el dinero diario en ncada prestamos
-    public function dailyMoneyStore(Request $request)
-    {
-        // return $request;
+    public function dailyMoneyStore(Request $request) {
         $request->merge(['amount'=>floatval($request->amount)]);
-        // return $request;
-        if(!$request->amount || $request->amount ==0)
-        {
+        if(!$request->amount || $request->amount ==0){
             return redirect()->route('loans-daily.money', ['loan' => $request->loan_id, 'cashier_id'=>$request->cashier_id])->with(['message' => 'Error en el monto ingresado.', 'alert-type' => 'error']);
         }
         $code = Transaction::all()->max('id');
         $code = $code?$code:0;
-        // return $code;
 
         $loan =Loan::where('id', $request->loan_id)->first();
-        if($request->amount > $loan->debt)
-        {
+        if($request->amount > $loan->debt){
             return redirect()->route('loans-daily.money', ['loan' => $request->loan_id, 'cashier_id'=>$request->cashier_id])->with(['message' => 'Monto Incorrecto.', 'alert-type' => 'error']);
         }
         DB::beginTransaction();
@@ -859,21 +853,14 @@ class LoanController extends Controller
             $transaction = Transaction::create(['type'=>$request->qr, 'transaction'=>$code+1]);
             $loan->update(['transaction_id'=>$transaction->transaction]);
             $amount = $request->amount;
-            // return $amount;
             
             $ok = LoanDay::where('loan_id', $request->loan_id)->where('date', $request->date)->where('debt', '>', 0)->first();
-            // return $request;
             // para la fecha actual del pago si existe numero en el calendario
-            if($ok)
-            {
-                // return "fecha actual";
+            if($ok){
                 $debt = $ok->debt;
-                if($amount > $debt)
-                {
+                if($amount > $debt){
                     $amount = $amount-$debt;
-                }
-                else
-                {                    
+                }else{
                     $debt = $amount;
                     $amount = 0;
                 }
@@ -892,29 +879,19 @@ class LoanController extends Controller
                 CashierMovement::where('cashier_id', $request->cashier_id)->where('deleted_at', null)->first()->increment('balance', $debt);
 
             }
-            // return $amount;
-            if($amount>0)
-            {
-                // return $amount;
+
+            if($amount>0){
                 $day = LoanDay::where('loan_id', $request->loan_id)->where('debt', '>', 0)->orderBy('number', 'ASC')->get();
-                // return $day;
                 foreach($day as $item)
                 {
                     $debt = $item->debt;
-                    if($amount > $debt)
-                    {
+                    if($amount > $debt){
                         $amount = $amount-$debt;
-                    }
-                    else
-                    {                    
+                    }else{                    
                         $debt = $amount;
                         $amount = 0;
                     }
-                // return $amount;
-
-
                     LoanDay::where('id', $item->id)->decrement('debt', $debt);
-
                     LoanDayAgent::create([
                         'loanDay_id' => $item->id,
                         'cashier_id' => $request->cashier_id, 
@@ -925,74 +902,18 @@ class LoanController extends Controller
                         'agentType' => $this->agent($request->agent_id)->role
                     ]);
                     CashierMovement::where('cashier_id', $request->cashier_id)->where('deleted_at', null)->first()->increment('balance', $debt);
-
                     Loan::where('id', $request->loan_id)->decrement('debt', $debt);
-                    if($amount<=0)
-                    {
+                    if($amount <= 0){
                         break;
                     }
-
                 }
-            }
-            
-            $loanDayAgent = DB::table('loan_days as ld')
-                ->join('loan_day_agents as la', 'la.loanDay_id', 'ld.id')
-                ->join('users as u', 'u.id', 'la.agent_id')
-                ->join('transactions as t', 't.id', 'la.transaction_id')
-                ->where('ld.loan_id', $loan->id)
-                ->where('t.id', $transaction->id)
-                ->select('ld.id as loanDay', 'ld.date', 'la.amount', 'u.name', 'la.agentType', 'la.id as loanAgent', 'ld.late')
-                ->get();
-            
-            $cadena = '';
-            
-            $cant = count($loanDayAgent);
-            $i=1;
-            foreach($loanDayAgent as $item)
-            {
-                $cadena=$cadena.($item->late==1?' SI':' NO').'            '.Carbon::parse($item->date)->format('d/m/Y').'         '.$item->amount.($i!=$cant?' ':'');
-                $i++;
-            }
-            
-            try {
-$message =
-'        *COMPROBANTE DE PAGO*
-
-CODIGO: '.$loan->code.'
-FECHA: '.Carbon::parse($transaction->created_at)->format('d/m/Y H:i:s').'
-BENEFICIARIO: '.$loan->people->last_name1.' '.$loan->people->last_name2.' '.$loan->people->first_name.'
-CI: '.$loan->people->ci.'
-
-              *DETALLE DEL PAGO*
-*ATRASO* | *DIAS PAGADO* | *TOTAL*
-___________________________________
-'.$cadena.'
-___________________________________
-TOTAL (BS)                           | '.number_format($request->amount,2).'
-            
-                *ATENDIDO POR*
-'.strtoupper($loanDayAgent[0]->agentType).':        '.strtoupper($loanDayAgent[0]->name).'
-COD TRANS:      '.$transaction->transaction.'
-
-            
-LOANSAPP V1';
-
-                if (setting('servidores.whatsapp')) {
-                    Http::post(setting('servidores.whatsapp').'/send', [
-                        'phone' => '591'.$loan->people->cell_phone,
-                        'text' => $message,
-                        'image_url' => '',
-                    ]);
-                }
-            } catch (\Throwable $th) {
-                
             }
 
             // Enviar notificación de pago
-            // if($loan->people->cell_phone){
-            //     $url = route('loans.payment.notification', $transaction->id);
-            //     SendRecipe::dispatch($url, $loan->people->cell_phone);
-            // }
+            if($loan->people->cell_phone){
+                $url = route('loans.payment.notification', $transaction->id);
+                SendRecipe::dispatch($url, $loan->people->cell_phone);
+            }
 
             DB::commit();
             return redirect()->route('loans-daily.money', ['loan' => $request->loan_id, 'cashier_id'=>$request->cashier_id])->with(['message' => 'Prestamo aprobado exitosamente.', 'alert-type' => 'success', 'loan_id' => $loan->id, 'transaction_id'=>$transaction->id]);

@@ -84,7 +84,6 @@ class PawnController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         DB::beginTransaction();
         try {
             // Registrar empeño
@@ -92,7 +91,7 @@ class PawnController extends Controller
                 'user_id' => Auth::user()->id,
                 'person_id' => $request->people_id,
                 'date' => $request->date,
-                'date_limit' => $request->date_limit,
+                'date_limit' => $request->date_limit_type == 1 ? date('Y-m-d', strtotime($request->date.' +'.$request->date_limit_months.' months')) : $request->date_limit,
                 'interest_rate' => $request->interest_rate,
                 'observations' => $request->observations,
             ]);
@@ -103,7 +102,7 @@ class PawnController extends Controller
                     'pawn_register_id' => $pawn_register->id,
                     'item_type_id' => $request->item_type_id[$i],
                     'price' => $request->price[$i],
-                    'quantity' => $request->quantity[$i],
+                    'quantity' => $request->quantity[$i] - $request->quantity_discount[$i] ?? 0,
                     'observations' => $request->observation[$i]
                 ]);
 
@@ -125,7 +124,7 @@ class PawnController extends Controller
             return redirect()->route('pawn.index')->with(['message' => 'Registrado exitosamente', 'alert-type' => 'success', 'pawn_register_id' => $pawn_register->id]);            
         } catch (\Throwable $th) {
             DB::rollback();
-            throw $th;
+            // throw $th;
             return redirect()->route('pawn.index')->with(['message' => 'Ocurrió un error', 'alert-type' => 'error']);
         }
     }

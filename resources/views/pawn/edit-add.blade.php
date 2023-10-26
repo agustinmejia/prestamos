@@ -51,7 +51,23 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <small for="date_limit">Fecha del límite de devolución</small>
-                                    <input type="date" name="date_limit" class="form-control" value="{{ date('Y-m-d', strtotime(date('Y-m-d').' +1 months')) }}" required>
+                                    <div class="input-group">
+                                        <input type="date" name="date_limit" id="input-date_limit" class="form-control" value="{{ date('Y-m-d', strtotime(date('Y-m-d').' +1 months')) }}" style="display:none" required>
+                                        <select name="date_limit_months" id="select-date_limit_months" class="form-control">
+                                            <option value="1">en 1 mes</option>
+                                            <option value="2">en 2 meses</option>
+                                            <option value="3">en 3 meses</option>
+                                            <option value="4">en 4 meses</option>
+                                            <option value="5">en 5 meses</option>
+                                            <option value="6">en 6 meses</option>
+                                        </select>
+                                        <span class="input-group-btn" style="padding: 0px">
+                                            <select name="date_limit_type" id="select-date_limit_type" class="form-control" style="width: 120px">
+                                                <option value="1">Por mes</option>
+                                                <option value="2">Por fecha</option>
+                                            </select>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -67,12 +83,13 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-12">
-                                    <table class="table table-bordered table-hover">
+                                    <table class="table table-hover">
                                         <thead>
                                             <tr>
                                                 <th>N&deg;</th>
                                                 <th>Tipo</th>
                                                 <th>Cantidad</th>
+                                                <th></th>
                                                 <th>Precio</th>
                                                 <th>Características</th>
                                                 <th>Observaciones</th>
@@ -82,12 +99,12 @@
                                         </thead>
                                         <tbody id="table-details">
                                             <tr class="tr-empty">
-                                                <td colspan="8">No hay artículos seleccionados</td>
+                                                <td colspan="9">No hay artículos seleccionados</td>
                                             </tr>
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td class="text-right" colspan="6">TOTAL Bs.</td>
+                                                <td class="text-right" colspan="7">TOTAL Bs.</td>
                                                 <td class="text-right" id="td-total"><h4>0.00</h4></td>
                                                 <td></td>
                                             </tr>
@@ -222,17 +239,36 @@
             width: 120px;
             border: 0px !important
         }
+        .label-description{
+            cursor: pointer;
+        }
+        .div-details small{
+            color: white !important
+        }
     </style>
 @stop
 
 @section('javascript')
     <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('vendor/tippy/popper.min.js') }}"></script>
+    <script src="{{ asset('vendor/tippy/tippy-bundle.umd.min.js') }}"></script>
     <script>
         var index = 0;
         var number_features = 0;
         $(document).ready(function(){
             
             customSelect('#select-people_id', '{{ url("admin/people/search/ajax") }}', formatResultPeople, data => data.first_name+' '+data.last_name1+' '+data.last_name2, null, 'createPerson()');
+
+            $('#select-date_limit_type').change(function(){
+                let type = $(this).val();
+                if (type == 1) {
+                    $('#select-date_limit_months').css('display', 'block');
+                    $('#input-date_limit').css('display', 'none');
+                } else {
+                    $('#input-date_limit').css('display', 'block');
+                    $('#select-date_limit_months').css('display', 'none');
+                }
+            });
             
             $('#select-item_category_id').select2({
                 tags: true,
@@ -274,7 +310,7 @@
                         features += `
                             <tr id="tr-features-${number_features}">
                                 <td style="width:120px !important"><input type="hidden" name="features_${index}[]" value="${item.id}" /><b>${item.name}</b>&nbsp;</td>
-                                <td><input type="text" name="features_value_${index}[]" ${item.required ? 'required' : ''} /></td>
+                                <td><input type="text" name="features_value_${index}[]" ${item.required ? 'required' : ''} style="width: 120px !important" /></td>
                                 <td><button type="button" class="btn-danger" onclick="removeTrFeature(${number_features})" ${item.required ? 'disabled' : ''}>x</button></td>
                             </tr>`;
                             number_features++;
@@ -286,20 +322,26 @@
                         <tr id="tr-item-${index}">
                             <td class="td-number"></td>
                             <td>
-                                ${type.name} <br>
+                                <span id="label-description-${type.id}" class="label-description">${type.name}</span> <br>
                                 <span style="font-size: 12px">${type.category.name}</span>
                                 <input type="hidden" name="item_type_id[]" value="${type.id}" />
                             </td>
                             <td width="120px">
                                 <div class="input-group">
-                                    <input type="number" name="quantity[]" id="input-quantity-${index}" onchange="getSubtotal(${index})" onkeyup="getSubtotal(${index})" class="form-control" value="1" min="1" step="0.1" required>
-                                    <span class="input-group-addon"><small>${type.unit ? type.unit : 'pza'}</small></span>
+                                    <input type="number" name="quantity[]" id="input-quantity-${index}" onchange="getSubtotal(${index})" onkeyup="getSubtotal(${index})" class="form-control" value="1" min="0.1" step="0.1" required>
+                                    <span class="input-group-addon" style="padding: 6px"><small>${type.unit ? type.unit : 'pza'}</small></span>
                                 </div>
                             </td>
-                            <td width="170px">
+                            <td width="120px">
+                                <div class="input-group" style="${!type.category.quantity_discount ? 'display:none' : ''}">
+                                    <input type="number" name="quantity_discount[]" id="input-quantity-discount-${index}" onchange="getSubtotal(${index})" onkeyup="getSubtotal(${index})" class="form-control" value="0" min="0" step="0.1" title="Descuento a la cantidad">
+                                    <span class="input-group-addon" style="padding: 6px"><small>${type.unit ? type.unit : 'pza'}</small></span>
+                                </div>
+                            </td>
+                            <td width="130px">
                                 <div class="input-group">
-                                    <input type="number" name="price[]" id="input-price-${index}" onchange="getSubtotal(${index})" onkeyup="getSubtotal(${index})" class="form-control" value="${type.price}" max="${type.max_price ? type.max_price : ''}" required>
-                                    <span class="input-group-addon"><small>Bs.</small></span>
+                                    <input type="number" name="price[]" id="input-price-${index}" onchange="getSubtotal(${index})" onkeyup="getSubtotal(${index})" class="form-control" value="${type.price % 1 == 0 ? parseInt(type.price) : type.price}" step="0.1" max="${type.max_price ? type.max_price : ''}" required>
+                                    <span class="input-group-addon" style="padding: 6px"><small>Bs.</small></span>
                                 </div>
                             </td>
                             <td style="width: 300px" class="table-features">
@@ -311,6 +353,30 @@
                             <td class="text-right"><button type="button" class="btn btn-link" onclick="removeTr(${index})"><span class="voyager-trash text-danger"></span></button></td>
                         </td>
                     `);
+
+                    // popover
+                    let image = "{{ asset('images/default.jpg') }}";
+                    if(type.images){
+                        image = JSON.parse(type.images)[0];
+                        image = "{{ asset('storage') }}/" + image.replace('.', '-cropped.');
+                    }
+
+                    tippy(`#label-description-${type.id}`, {
+                        content: `  <div style="display: flex; flex-direction: row;" class="div-details">
+                                        <div style="margin-right:10px">
+                                            <img src="${image}" width="70px" alt="${type.name}" />
+                                        </div>
+                                        <div>
+                                            <b>${type.name}</b><br>
+                                            <small>categoría: <b>${type.category.name}</b></small><br>
+                                            <small>Precio sugerido: <b>${type.price % 1 == 0 ? parseInt(type.price) : type.price} Bs.</b></small><br>
+                                            <small>Precio máximo: <b>${type.max_price ? (type.max_price % 1 == 0 ? parseInt(type.max_price) : type.max_price)+' Bs.'+(type.unit ? ' por '+type.unit : '') : 'No definido'}</b></small><br>
+                                        </div>
+                                    </div>`,
+                        allowHTML: true,
+                        maxWidth: 450,
+                    });
+
                     generateNumber();
                     index++;
                     $('#select-item_id').val('').trigger('change');
@@ -360,7 +426,7 @@
             $(`#table-features-${index}`).append(`
                 <tr id="tr-features-${number_features}">
                     <td><input type="text" name="features_${index}[]" placeholder="Nuevo..." autofocus class="input-feature" required /></td>
-                    <td><input type="text" name="features_value_${index}[]" required /></td>
+                    <td><input type="text" name="features_value_${index}[]" style="width: 120px !important" required /></td>
                     <td><button type="button" class="btn-danger" onclick="removeTrFeature(${number_features})">x</button></td>
                 </tr>
             `);
@@ -370,14 +436,15 @@
         function getSubtotal(index){
             let price = $(`#input-price-${index}`).val() ? parseFloat($(`#input-price-${index}`).val()) : 0;
             let quantity = $(`#input-quantity-${index}`).val() ? parseFloat($(`#input-quantity-${index}`).val()) : 0;
-            if (quantity > 0) {
-                $(`#td-subtotal-${index}`).text((price*quantity).toFixed(2));
+            let quantity_discount = $(`#input-quantity-discount-${index}`).val() ? parseFloat($(`#input-quantity-discount-${index}`).val()) : 0;
+            // if (quantity > 0) {
+                $(`#td-subtotal-${index}`).text((price*(quantity - quantity_discount)).toFixed(2));
                 getTotal();
-            } else {
-                $(`#input-quantity-${index}`).val(1);
-                getSubtotal(index);
-                toastr.warning('La cantidad debe ser de al menos 1', 'Advertencia');
-            }
+            // } else {
+            //     $(`#input-quantity-${index}`).val(1);
+            //     getSubtotal(index);
+            //     toastr.warning('La cantidad debe ser de al menos 1', 'Advertencia');
+            // }
         }
 
         function getTotal(){

@@ -17,6 +17,7 @@ class CreateItemCategoriesTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->text('description')->nullable();
+            $table->smallInteger('quantity_discount')->nullable()->default(0);
             $table->smallInteger('status')->nullable()->default(1);
             $table->timestamps();
             $table->softDeletes();

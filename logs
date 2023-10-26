@@ -1,2 +1,1 @@
-php artisan migrate
-set .env QUEUE_CONNECTION=database
+ALTER TABLE `item_categories` ADD `quantity_discount` SMALLINT(1) NULL DEFAULT '0' AFTER `description`;

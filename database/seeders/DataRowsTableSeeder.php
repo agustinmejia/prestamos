@@ -2396,7 +2396,7 @@ class DataRowsTableSeeder extends Seeder
                 'display_name' => 'Creado',
                 'required' => 0,
                 'browse' => 1,
-                'read' => 1,
+                'read' => 0,
                 'edit' => 0,
                 'add' => 0,
                 'delete' => 0,
@@ -2832,8 +2832,8 @@ class DataRowsTableSeeder extends Seeder
                 'edit' => 1,
                 'add' => 1,
                 'delete' => 1,
-                'details' => '{"on":"Activo","off":"Inactivo","checked":true}',
-                'order' => 4,
+                'details' => '{"on":"Activo","off":"Inactivo","checked":true,"display":{"width":6}}',
+                'order' => 5,
             ),
             176 => 
             array (
@@ -2849,7 +2849,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 5,
+                'order' => 6,
             ),
             177 => 
             array (
@@ -2865,7 +2865,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 6,
+                'order' => 7,
             ),
             178 => 
             array (
@@ -2881,7 +2881,7 @@ class DataRowsTableSeeder extends Seeder
                 'add' => 0,
                 'delete' => 0,
                 'details' => '{}',
-                'order' => 7,
+                'order' => 8,
             ),
             179 => 
             array (
@@ -3234,6 +3234,22 @@ class DataRowsTableSeeder extends Seeder
                 'delete' => 1,
                 'details' => '{"on":"Si","off":"No","checked":true,"display":{"width":6}}',
                 'order' => 5,
+            ),
+            201 => 
+            array (
+                'id' => 220,
+                'data_type_id' => 26,
+                'field' => 'quantity_discount',
+                'type' => 'checkbox',
+                'display_name' => 'Habilitar descuento',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 1,
+                'add' => 1,
+                'delete' => 1,
+            'details' => '{"on":"Si","off":"No","checked":true,"display":{"width":6},"description":"Habilitar descuento de cantidad de item (peso de piedra, impureza, etc.)."}',
+                'order' => 4,
             ),
         ));
         

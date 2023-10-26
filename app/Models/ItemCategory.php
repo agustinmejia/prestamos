@@ -14,6 +14,7 @@ class ItemCategory extends Model
     protected $fillable = [
         'name',
         'description',
+        'quantity_discount',
         'status',
     ];
 
