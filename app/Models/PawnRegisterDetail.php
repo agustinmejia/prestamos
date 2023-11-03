@@ -16,6 +16,7 @@ class PawnRegisterDetail extends Model
         'item_type_id',
         'price',
         'quantity',
+        'image',
         'observations'
     ];
 

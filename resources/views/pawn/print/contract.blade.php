@@ -21,12 +21,13 @@
 @section('content')
     <div class="content" style="text-align: justify">
         <h2 class="text-center" style="font-size: 18px; margin-top: 0px">CONTRATO PRIVADO</h2>
-        <p><em>Conste por el presente documento privado del préstamo que a solo reconocimiento de firmas tendrá calidad de instrumento público, que el señor <strong>CHRISTIAN MERCADO PERICON</strong></em><em>, con</em><em><strong> C.I.1919784 BE, </strong>, que para fines del contrato en adelante en adelante se denominará como el <strong>ACREEDOR</strong>, por una parte, y el (la) señor (a) <strong>{{ $pawn->person->first_name}} {{$pawn->person->last_name1}} {{$pawn->person->last_name2}} mayor de edad, habil por derecho con CI. {{ $pawn->person->ci }} con domicilio <b>{{ $pawn->person->zone }} {{ $pawn->person->street }}, {{ $pawn->person->home }}</b> </strong> que para fines del presente contrato en adelante se denominara como <strong>EL DEUDOR</strong>, por la otra parte, suscriben el presente contrato al tenor de las siguiente cláusula: </em></p>
+        <p><em>Conste por el presente documento privado del préstamo que a solo reconocimiento de firmas tendrá calidad de instrumento público, que el señor <strong>CHRISTIAN MERCADO PERICON</strong></em><em>, con</em><em><strong> C.I.1919784 BE, </strong>, que para fines del contrato en adelante en adelante se denominará como el <strong>ACREEDOR</strong>, por una parte, y el (la) señor (a) <strong>{{ $pawn->person->first_name}} {{$pawn->person->last_name1}} {{$pawn->person->last_name2}} mayor de edad, hábil por derecho con CI. {{ $pawn->person->ci }} con domicilio <b>{{ $pawn->person->zone }} {{ $pawn->person->street }}, {{ $pawn->person->home }}</b> </strong> que para fines del presente contrato en adelante se denominara como <strong>EL DEUDOR</strong>, por la otra parte, suscriben el presente contrato al tenor de las siguiente cláusula: </em></p>
         <p><em><span style="text-decoration: underline;"><strong>PRIMERA.- EL DEUDOR</strong></span></em><em> declara ser legítimo propietario de: 
             @php
                 $subtotal = 0;
             @endphp
-            @foreach ($pawn->details as $detail)
+            <table>
+                @foreach ($pawn->details as $detail)
                 @php
                     $features_list = '';
                     foreach ($detail->features_list as $feature) {
@@ -34,15 +35,23 @@
                             $features_list .= '<span><b>'.$feature->feature->name.'</b>: '.$feature->value.'</span>&nbsp;&nbsp;&nbsp;';
                         }
                     }
+                    $image = asset('images/default.jpg');
+                    if($detail->image){
+                        $image = asset('storage/'.str_replace('.', '-cropped.', $detail->image));
+                    }
                 @endphp
-                <li>
-                    {{ floatval($detail->quantity) ? intval($detail->quantity) : $detail->quantity }}{{ $detail->type->unit }} {{ $detail->type->name }} con un precio de {{ $detail->price }} Bs. <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp; {!! $features_list !!}
-                </li>
+                <tr>
+                    <td width="100px"><img src="{{ $image }}" width="60px" alt="Imagen"></td>
+                    <td>
+                        {{ floatval($detail->quantity) ? intval($detail->quantity) : $detail->quantity }}{{ $detail->type->unit }} {{ $detail->type->name }} con un precio de {{ $detail->price }} Bs. <br>
+                        {!! $features_list !!}
+                    </td>
+                </tr>
                 @php
                     $subtotal += $detail->quantity * $detail->price;
                 @endphp
             @endforeach
+            </table>
         </p>
         
      

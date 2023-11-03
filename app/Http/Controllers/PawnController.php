@@ -91,9 +91,10 @@ class PawnController extends Controller
                 'user_id' => Auth::user()->id,
                 'person_id' => $request->people_id,
                 'date' => $request->date,
-                'date_limit' => $request->date_limit_type == 1 ? date('Y-m-d', strtotime($request->date.' +'.$request->date_limit_months.' months')) : $request->date_limit,
+                'date_limit' => date('Y-m-d', strtotime($request->date.' +'.$request->date_limit_months.' months')),
                 'interest_rate' => $request->interest_rate,
                 'observations' => $request->observations,
+                'status' => $request->validate ? 'por validar' : 'pendiente'
             ]);
 
             // Registrar items del empeño
@@ -103,7 +104,7 @@ class PawnController extends Controller
                     'item_type_id' => $request->item_type_id[$i],
                     'price' => $request->price[$i],
                     'quantity' => $request->quantity[$i] - $request->quantity_discount[$i] ?? 0,
-                    'observations' => $request->observation[$i]
+                    'image' => $this->store_image($request->image[$i], 'pawn_register', 1000)
                 ]);
 
                 // Obtener la categoría

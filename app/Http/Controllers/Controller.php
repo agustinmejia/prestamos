@@ -11,6 +11,9 @@ use Illuminate\Support\Carbon;
 use App\Models\Cashier;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class Controller extends BaseController
 {
@@ -44,7 +47,33 @@ class Controller extends BaseController
         ->where('deleted_at', NULL)->first();
     }
 
+    public function store_image($file, $folder, $size = 512){
+        try {
+            Storage::makeDirectory($folder.'/'.date('F').date('Y'));
+            $base_name = Str::random(20);
 
+            // imagen normal
+            $filename = $base_name.'.'.$file->getClientOriginalExtension();
+            $image_resize = Image::make($file->getRealPath())->orientate();
+            $image_resize->resize($size, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $path =  $folder.'/'.date('F').date('Y').'/'.$filename;
+            $image_resize->save(public_path('../storage/app/public/'.$path));
 
+            // imagen cuadrada
+            $filename_small = $base_name.'-cropped.'.$file->getClientOriginalExtension();
+            $image_resize = Image::make($file->getRealPath())->orientate();
+            $image_resize->resize(null, 256, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $image_resize->resizeCanvas(256, 256);
+            $path_small = "$folder/".date('F').date('Y').'/'.$filename_small;
+            $image_resize->save(public_path('../storage/app/public/'.$path_small));
 
+            return $path;
+        } catch (\Throwable $th) {
+            return null;
+        }
+    }
 }
