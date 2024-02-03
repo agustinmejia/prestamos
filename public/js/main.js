@@ -98,7 +98,7 @@ function formatResultPeople(data) {
 
 $(document).ready(function(){
     $('.btn-notification').click(async function(e){
-        if (whatsappServer && imagesGeneratorServer) {
+        if (whatsappServer && imagesGeneratorServer && whatsappServerSession) {
             $('body').loading({message: 'Enviando...'});
             e.preventDefault();
             let route = $(this).attr('href');
@@ -119,7 +119,7 @@ $(document).ready(function(){
                         image_url: image.url
                     }
 
-                    fetch(`${whatsappServer}/send`, {
+                    fetch(`${whatsappServer}/send?id=${whatsappServerSession}`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

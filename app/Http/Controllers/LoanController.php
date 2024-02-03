@@ -602,10 +602,10 @@ class LoanController extends Controller
             $ok = Loan::with(['people'])->where('id', $loan)->first();
             
             try {
-                if (setting('servidores.whatsapp')) {
-                    Http::post(setting('servidores.whatsapp').'/send', [
+                if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
+                    Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
                         'phone' => '591'.$ok->people->cell_phone,
-                        'text' => 'Hola *'.$ok->people->first_name.' '.$ok->people->last_name1.' '.$ok->people->last_name2.'*.%0A%0A*SU SOLICITUD DE PRESTAMO HA SIDO APROBADA EXITOSAMENTE*%0A%0APase por favor por las oficinas para entregarle su solicitud de prestamos%0A%0AGracias🤝',
+                        'text' => 'Hola *'.$ok->people->first_name.' '.$ok->people->last_name1.' '.$ok->people->last_name2.'* SU SOLICITUD DE PRESTAMO HA SIDO APROBADA EXITOSAMENTE. Pase por favor por las oficinas para entregarle su solicitud de prestamos, Gracias🤝',
                         'image_url' => '',
                     ]);
                 }

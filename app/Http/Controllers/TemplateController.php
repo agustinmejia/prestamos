@@ -39,10 +39,10 @@ class TemplateController extends Controller
         CodeVerification::create(['type'=>'solicitudCliente', 'loan_id'=>$request->loan_id, 'cell_phone'=>$request->cell_phone, 'code'=>$aux]);
         
         try {
-            if (setting('servidores.whatsapp')) {
-                Http::post(setting('servidores.whatsapp').'/send', [
+            if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
+                Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
                     'phone' => '591'.$request->cell_phone,
-                    'text' => 'CAPRESI%0A%0A*'.$aux.'* es tu codigo de verificación.%0A%0ANo lo compartas con nadie mas',
+                    'text' => 'CAPRESI *'.$aux.'* es tu codigo de verificación. No lo compartas con nadie más',
                     'image_url' => '',
                 ]);
             }
@@ -85,8 +85,8 @@ __________________________________________%0A'.
 _________________________________________
     Gracias🤝😊';
 
-                if (setting('servidores.whatsapp')) {
-                    Http::post(setting('servidores.whatsapp').'/send', [
+                if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
+                    Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
                         'phone' => '591'.$phone,
                         'text' => $message,
                         'image_url' => '',

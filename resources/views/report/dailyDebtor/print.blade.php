@@ -48,7 +48,7 @@
                 <th rowspan="2" style="text-align: center">MONTO PRESTADO</th>
                 <th rowspan="2" style="text-align: center">INTERES A PAGAR</th>
                 <th rowspan="2" style="text-align: center">TOTAL A PAGAR</th>
-                <th colspan="2" style="text-align: center">RETRAZO</th>
+                <th colspan="2" style="text-align: center">RETRASO</th>
             </tr>
             <tr>
                 <th style="text-align: center">DIAS</th>

@@ -88,6 +88,7 @@
                 @include('voyager::dashboard.sidebar')
                 <script>
                     var whatsappServer = "{{ setting('servidores.whatsapp') }}";
+                    var whatsappServerSession = "{{ setting('servidores.whatsapp-session') }}";
                     var imagesGeneratorServer = "{{ setting('servidores.image-from-url') }}";
                     (function(){
                             var appContainer = document.querySelector('.app-container'),

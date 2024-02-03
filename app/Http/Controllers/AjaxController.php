@@ -127,8 +127,8 @@ TOTAL (BS)                  '.number_format($amountDebt,2).'         '.number_fo
     
 Gracias🤝😊';
 
-                if (setting('servidores.whatsapp')) {
-                    Http::post(setting('servidores.whatsapp').'/send', [
+                if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
+                    Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
                         'phone' => '591'.$item->cell_phone,
                         'text' => $message,
                         'image_url' => '',

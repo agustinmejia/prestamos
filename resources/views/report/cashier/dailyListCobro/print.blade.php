@@ -38,22 +38,21 @@
             <tr>
                 <th rowspan="2" style="width:5px">N&deg;</th>
                 <th rowspan="2" style="text-align: center; width:70px">CODIGO</th>
-                <th rowspan="2" style="text-align: center">CI</th>
                 <th rowspan="2" style="text-align: center">CLIENTE</th>
-                <th colspan="2" style="text-align: center">PAGO DIA ACTUAL</th>
-                <th colspan="3" style="text-align: center">RETRAZO</th>
+                <th rowspan="2" style="text-align: center">TELEFONO/CELULAR</th>
+                <th rowspan="2" style="text-align: center">DURACIÓN</th>
+                <th rowspan="2" style="text-align: center">PAGO DIARIO</th>
+                <th colspan="3" style="text-align: center">RETRASO</th>
             </tr>
             <tr>
-                <th style="text-align: center; width:70px">PAGO DIARIO</th>
-                <th style="text-align: center; width:70px">DEUDA</th>
-
-                <th style="text-align: center; width:70px">DIAS</th>
-                <th style="text-align: center; width:70px">TOTAL A PAGAR</th>
+                <th style="text-align: center; width:50px">DIAS</th>
+                <th style="text-align: center; width:50px">TOTAL A PAGAR</th>
             </tr>
         </thead>
         <tbody>
             @php
                 $count = 1;
+                $pago_diario = 0;
             @endphp
             @forelse ($data as $item)
                 @php
@@ -108,10 +107,27 @@
                         <tr style="text-align: center">
                             <td>{{ $count }}</td>
                             <td style="text-align: center"><b>{{ $item->code}}</b></td>
-                            <td style="text-align: center">{{ $item->ci }}</td>
-                            <td style="text-align: left">{{ $item->last_name1}} {{ $item->last_name2}} {{ $item->first_name}}</td>
-                            <td style="text-align: right"><b>{{ $day?'Bs. '. number_format($day->amount,2, ',', '.'):'SN' }}</b></td>
-                            <td style="text-align: right"><b>{{ $day?'Bs. '. number_format($day->debt,2, ',', '.'):'SN' }}</b></td>
+                            <td style="text-align: left">{{ $item->last_name1}} {{ $item->last_name2}} {{ $item->first_name}} <br> <small>{{ $item->ci }}</small> </td>
+                            <td style="text-align: center">
+                                @if ($item->cell_phone)
+                                    {{ $item->cell_phone }}
+                                @elseif($item->phone)
+                                    {{ $item->phone }}
+                                @endif
+                            </td>
+                            <td>
+                                @php
+                                    $dias = App\Models\LoanDay::where('loan_id', $item->loan_id)->get();
+                                    $inicio = $dias->sortBy('date')->first()->date;
+                                    $fin = $dias->sortByDesc('date')->first()->date;
+                                @endphp
+                                @if (date('Y', strtotime($inicio)) == date('Y', strtotime($fin)))
+                                {{ date('d', strtotime($inicio)) }}/{{ $months[intval(date('m', strtotime($inicio)))] }} al {{ date('d', strtotime($fin)) }}/{{ $months[intval(date('m', strtotime($fin)))] }} de {{ date('Y', strtotime($fin)) }}
+                                @else
+                                {{ date('d', strtotime($inicio)) }}/{{ $months[intval(date('m', strtotime($inicio)))] }}/{{ date('Y', strtotime($inicio)) }} al {{ date('d', strtotime($fin)) }}/{{ $months[intval(date('m', strtotime($fin)))] }}/{{ date('Y', strtotime($fin)) }}
+                                @endif
+                            </td>
+                            <td style="text-align: right"><b>{{ $day? number_format($day->amount,2, ',', '.'):'SN' }}</b></td>
                             <td @if($atras->montoAtrasado > 0)                                     
                                     @if ($atras->diasAtrasado > 0 && $atras->diasAtrasado <= 5)
                                         style="text-align: right; background-color: #F4DAD7" 
@@ -140,27 +156,32 @@
                                 @else 
                                     style="text-align: right"
                                 @endif>
-                                {{$atras->montoAtrasado?'Bs. '.number_format($atras->montoAtrasado,2,',','.'):'SN' }}
+                                {{$atras->montoAtrasado?number_format($atras->montoAtrasado,2,',','.'):'SN' }}
                             </td>      
                             
                         </tr>
                         @php
-                            $count++;                        
+                            $count++;
+                            if($day){
+                                $pago_diario += $day->amount;
+                            }
                         @endphp
                     @endif
                 @endif
-                    
-              
-
-                
-                
+               
             @empty
                 <tr style="text-align: center">
                     <td colspan="8">No se encontraron registros.</td>
                 </tr>
             @endforelse
         </tbody>
-       
+        <tfoot>
+            <tr>
+                <td colspan="5" style="text-align: right"><b>TOTAL</b></td>
+                <td style="text-align: right"><b>Bs. {{ $pago_diario }}</b></td>
+                <td colspan="2"></td>
+            </tr>
+        </tfoot>
     </table>
 
 @endsection

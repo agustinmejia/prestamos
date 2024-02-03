@@ -564,14 +564,12 @@
                 }
             })
 
-            url = "http://whatsapp.capresi.net/?number=591"+phone+"&message=Hola *"+name+"*.%0A%0A*SU SOLICITUD DE PRESTAMO HA SIDO APROBADA EXITOSAMENTE*%0A%0APase por favor por las oficinas para entregarle su solicitud de prestamos%0A%0AGracias🤝😊";
+            // url = "http://whatsapp.capresi.net/?number=591"+phone+"&message=Hola *"+name+"*.%0A%0A*SU SOLICITUD DE PRESTAMO HA SIDO APROBADA EXITOSAMENTE*%0A%0APase por favor por las oficinas para entregarle su solicitud de prestamos%0A%0AGracias🤝😊";
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", url);
-            xhr.send();
-            // xhr.responseType = "json";
+            // const xhr = new XMLHttpRequest();
+            // xhr.open("GET", url);
+            // xhr.send();
 
-            // window.open("http://api.trabajostop.com:3001/?number=59167285914&message=hola")
             $("#notificar-modal").modal('hide');
         }
         $('#notificar-modal').on('show.bs.modal', function (event) {

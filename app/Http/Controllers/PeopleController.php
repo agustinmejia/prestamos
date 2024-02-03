@@ -143,10 +143,10 @@ class PeopleController extends Controller
         DB::beginTransaction();
         try {
             
-            if (setting('servidores.whatsapp')) {
-                Http::post(setting('servidores.whatsapp').'/send', [
+            if (setting('servidores.whatsapp') && setting('servidores.whatsapp-session')) {
+                Http::post(setting('servidores.whatsapp').'/send?id='.setting('servidores.whatsapp-session'), [
                     'phone' => '591'.$request->phonee,
-                    'text' => 'Hola *'.$request->name.'*.%0A%0A*CAPRESI* te da la Bienvenida%0A%0APara verificar tus datos personales has clic en el enlace de abajo.%0A👇👇%0Ahttps://capresi.net/message/'.$request->id.'/verification',
+                    'text' => 'Hola *'.$request->name.'*, *CAPRESI* te da la Bienvenida. Para verificar tus datos personales has click en el siguiente enlace https://capresi.net/message/'.$request->id.'/verification',
                     'image_url' => '',
                 ]);
             }

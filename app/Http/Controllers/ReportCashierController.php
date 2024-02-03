@@ -174,7 +174,7 @@ class ReportCashierController extends Controller
             ->where('r.deleted_at', null)
             ->whereRaw($query_filter)
 
-            ->select('p.first_name', 'p.last_name1', 'last_name2', 'p.ci', 'l.code', 'l.dateDelivered', 'p.cell_phone', 'p.street', 'p.home', 'p.zone',
+            ->select('p.first_name', 'p.last_name1', 'last_name2', 'p.ci', 'l.code', 'l.dateDelivered', 'p.cell_phone', 'p.phone', 'p.street', 'p.home', 'p.zone',
                 'l.day', 'l.amountTotal', 'l.amountLoan', 'l.amountPorcentage', 'l.date', 'l.id as loan_id', 'r.name as ruta'
             )
             ->get();
